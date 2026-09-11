@@ -1,0 +1,13 @@
+.page {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 0.75rem;
+}
+
+.text {
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}

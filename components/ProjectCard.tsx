@@ -1,0 +1,29 @@
+import Link from "next/link";
+import type { Project } from "@/data/projects";
+import styles from "./ProjectCard.module.css";
+
+type ProjectCardProps = {
+  project: Project;
+};
+
+export function ProjectCard({ project }: ProjectCardProps) {
+  return (
+    <article className={styles.card}>
+      <p className={styles.meta}>
+        {project.category} · {project.year}
+      </p>
+      <h3 className={styles.title}>{project.title}</h3>
+      <p className={styles.description}>{project.shortDescription}</p>
+      <div className={styles.tags}>
+        {project.tags.map((tag) => (
+          <span key={tag} className="tag">
+            {tag}
+          </span>
+        ))}
+      </div>
+      <Link href={`/projects/${project.slug}`} className={styles.link}>
+        Смотреть проект →
+      </Link>
+    </article>
+  );
+}
