@@ -19,7 +19,7 @@ export default function HomePage() {
   return (
     <>
       <section className={styles.hero}>
-        <div className={`container ${styles.heroInner}`}>
+        <div className={styles.heroInner}>
           <h1 className={styles.heroTitle}>
             {hero.titleLines.map((line, i) => (
               <span

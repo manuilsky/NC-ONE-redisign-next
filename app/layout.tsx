@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Manrope, Unbounded } from "next/font/google";
+import { Commissioner, Unbounded } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ScrollVideoBackground } from "@/components/ScrollVideoBackground";
 import { SCROLL_BG_POSTER, SCROLL_BG_VIDEO } from "@/data/media";
 import "./globals.css";
 
-const display = Unbounded({
+const displayFallback = Unbounded({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-display",
+  variable: "--font-unbounded",
   weight: ["500", "600", "700"],
 });
 
-const body = Manrope({
+const body = Commissioner({
   subsets: ["latin", "cyrillic"],
   variable: "--font-body",
   weight: ["400", "500", "600", "700"],
@@ -20,8 +20,8 @@ const body = Manrope({
 
 export const metadata: Metadata = {
   title: {
-    default: "NC 1 — архитектура цифрового будущего",
-    template: "%s | NC 1",
+    default: "НК 1 — архитектура цифрового будущего",
+    template: "%s | НК 1",
   },
   description:
     "Международная IT-компания: разработка ПО, AI, highload и технологическое партнёрство.",
@@ -33,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${display.variable} ${body.variable}`}>
+    <html lang="ru" className={`${displayFallback.variable} ${body.variable}`}>
       <body>
         <div className="site">
           <ScrollVideoBackground
