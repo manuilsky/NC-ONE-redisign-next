@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import { Commissioner, Unbounded } from "next/font/google";
+import { Commissioner } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ScrollVideoBackground } from "@/components/ScrollVideoBackground";
 import { SCROLL_BG_POSTER, SCROLL_BG_VIDEO } from "@/data/media";
 import "./globals.css";
 
-const displayFallback = Unbounded({
-  subsets: ["latin", "cyrillic"],
-  variable: "--font-unbounded",
-  weight: ["500", "600", "700"],
-});
-
+/* Figma body/labels/buttons: Commissioner Regular / Medium / SemiBold */
 const body = Commissioner({
   subsets: ["latin", "cyrillic"],
   variable: "--font-body",
@@ -33,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${displayFallback.variable} ${body.variable}`}>
+    <html lang="ru" className={body.variable}>
       <body>
         <div className="site">
           <ScrollVideoBackground

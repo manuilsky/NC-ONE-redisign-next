@@ -19,14 +19,54 @@
   --container: 1440px;
   --header-h: 4.5rem;
   --glow: 0 8px 30px rgba(110, 139, 255, 0.25);
-  --font-display: "Benzin", var(--font-unbounded), "Segoe UI", sans-serif;
+  /* Figma: Benzin-Medium / Semibold / Bold as separate families → one CSS family */
+  --font-display: "Benzin", sans-serif;
+  --font-weight-heading: 500; /* Benzin-Medium */
+  --font-weight-stat: 600; /* Benzin-Semibold */
+  --font-weight-display-bold: 700; /* Benzin-Bold */
+}
+
+@font-face {
+  font-family: "Benzin";
+  src: url("/fonts/Benzin-Regular.woff2") format("woff2"),
+    url("/fonts/Benzin-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
   font-family: "Benzin";
   src: url("/fonts/Benzin-Medium.woff2") format("woff2"),
     url("/fonts/Benzin-Medium.woff") format("woff");
-  font-weight: 400 500;
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Benzin";
+  src: url("/fonts/Benzin-Semibold.woff2") format("woff2"),
+    url("/fonts/Benzin-Semibold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Benzin";
+  src: url("/fonts/Benzin-Bold.woff2") format("woff2"),
+    url("/fonts/Benzin-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Benzin";
+  src: url("/fonts/Benzin-ExtraBold.woff2") format("woff2"),
+    url("/fonts/Benzin-ExtraBold.woff") format("woff");
+  font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
@@ -110,7 +150,9 @@ button {
   display: inline-block;
   margin-bottom: 1rem;
   color: var(--muted);
+  font-family: var(--font-body), "Segoe UI", sans-serif;
   font-size: 0.85rem;
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -118,9 +160,9 @@ button {
 .sectionTitle {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 4.5vw, 3.4rem);
-  font-weight: 700;
+  font-weight: var(--font-weight-heading);
   line-height: 1.05;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
   max-width: 18ch;
 }
@@ -182,9 +224,10 @@ button {
   border-radius: var(--radius-pill);
   background: var(--accent);
   color: #fff;
+  font-family: var(--font-display);
   font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: var(--font-weight-stat);
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   white-space: nowrap;
 }
