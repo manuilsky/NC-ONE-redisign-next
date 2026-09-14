@@ -65,15 +65,14 @@
   }
 }
 
-/* —— About (Figma 173:944) —— */
 .about {
-  padding: 6rem 0; /* 96px */
+  padding: 6rem 0;
 }
 
 .aboutGrid {
   display: grid;
-  grid-template-columns: 28.75rem minmax(0, 45.25rem); /* 460 + 724 */
-  gap: 4rem; /* 64 */
+  grid-template-columns: 28.75rem minmax(0, 45.25rem);
+  gap: 4rem;
   align-items: center;
   justify-content: space-between;
 }
@@ -81,7 +80,7 @@
 .aboutTextCol {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* 24 */
+  gap: 1.5rem;
   max-width: 28.75rem;
 }
 
@@ -89,7 +88,7 @@
   margin: 0;
   color: var(--muted);
   font-family: var(--font-body), "Segoe UI", sans-serif;
-  font-size: 0.75rem; /* 12 */
+  font-size: 0.75rem;
   font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -99,7 +98,7 @@
 .aboutText {
   margin: 0;
   color: var(--muted);
-  font-size: 1rem; /* 16 */
+  font-size: 1rem;
   font-weight: 400;
   line-height: 1.7;
   text-align: justify;
@@ -112,34 +111,33 @@
 
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(3, 14.375rem); /* 230 */
-  gap: 1rem; /* 16 */
+  grid-template-columns: repeat(3, 14.375rem);
+  gap: 1rem;
   width: max-content;
   max-width: 100%;
 }
 
 .statCard {
   box-sizing: border-box;
-  width: 14.375rem; /* 230 */
-  height: 11.34375rem; /* 181.5 */
-  padding: 2rem 1.5rem; /* 32 / 24 */
-  border-radius: 1rem; /* 16 */
+  width: 14.375rem;
+  height: 11.34375rem;
+  padding: 2rem 1.5rem;
+  border-radius: 1rem;
   border: 1px solid var(--border-glass);
-  /* Opaque page-bg under glass wash — Figma sits on solid #05060a, not blue glows */
   background: var(--bg-glass), var(--bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: var(--shadow-glass);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem; /* 8 */
+  gap: 0.5rem;
   align-items: flex-start;
 }
 
 .statValue {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 2rem; /* 32 */
+  font-size: 2rem;
   font-weight: var(--font-weight-stat);
   line-height: 1;
   color: var(--text);
@@ -149,7 +147,7 @@
   margin: 0;
   color: var(--muted);
   font-family: var(--font-body), "Segoe UI", sans-serif;
-  font-size: 0.875rem; /* 14 */
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.4;
   text-transform: uppercase;
@@ -157,7 +155,7 @@
 }
 
 .statLabelCompact {
-  font-size: 0.75rem; /* 12 */
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   line-height: 1.25;
 }

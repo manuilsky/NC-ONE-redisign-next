@@ -12,7 +12,6 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 1rem;
-  /* Figma Header: 113px, padding 32 / 48 */
   min-height: 7.0625rem;
   padding-block: 2rem;
 }
@@ -25,20 +24,19 @@
 
 .logoImage {
   width: auto;
-  height: 2.5rem; /* Figma logo 40px */
+  height: 2.5rem;
   object-fit: contain;
 }
 
 .nav {
   display: flex;
   justify-content: center;
-  gap: 1.5rem; /* Figma Nav gap 24px */
+  gap: 1.5rem;
   flex-wrap: wrap;
 }
 
 .navLink {
   color: var(--muted);
-  /* Figma: Commissioner Regular 14 / 150% */
   font-family: var(--font-body), "Segoe UI", sans-serif;
   font-size: 0.875rem;
   font-weight: 400;
@@ -52,8 +50,7 @@
 }
 
 .cta {
-  /* Figma Button Label/14: Commissioner Medium 14 */
-  min-height: 3.0625rem; /* 49px */
+  min-height: 3.0625rem;
   padding: 1rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 500;

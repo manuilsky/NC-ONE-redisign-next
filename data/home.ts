@@ -7,7 +7,6 @@ export type WhyUsItem = {
 export type StatItem = {
   value: string;
   label: string;
-  /** Figma Label/12 instead of Label/14 */
   compactLabel?: boolean;
 };
 

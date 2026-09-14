@@ -2,15 +2,6 @@
   --bg: #05060a;
   --bg-elevated: rgba(18, 18, 20, 0.72);
   --bg-card: rgba(22, 22, 26, 0.85);
-  /*
-   * Figma Glass Card 173:956 (Desktop Bridge):
-   * fill linear 90deg: white 0.1 → 0.02 → 0.05
-   * stroke 1 inside: white 0.14
-   * inner (0,1) 0/0 white 0.4
-   * inner (0,-14) 26/-20 white 0.14
-   * drop (0,24) 48/-26 black 0.6
-   * background blur 20
-   */
   --bg-glass: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0.1) 0%,
@@ -37,13 +28,12 @@
   --radius-lg: 24px;
   --radius-pill: 999px;
   --container: 1440px;
-  --header-h: 7.0625rem; /* Figma desktop Header 113px */
+  --header-h: 7.0625rem;
   --glow: 0 8px 30px rgba(110, 139, 255, 0.25);
-  /* Figma: Benzin-Medium / Semibold / Bold as separate families → one CSS family */
   --font-display: "Benzin", sans-serif;
-  --font-weight-heading: 500; /* Benzin-Medium */
-  --font-weight-stat: 600; /* Benzin-Semibold */
-  --font-weight-display-bold: 700; /* Benzin-Bold */
+  --font-weight-heading: 500;
+  --font-weight-stat: 600;
+  --font-weight-display-bold: 700;
 }
 
 @font-face {
@@ -104,7 +94,6 @@ html {
 body {
   margin: 0;
   font-family: var(--font-body), sans-serif;
-  /* Match Figma Commissioner defaults: FLAR/VOLM/slnt = 0 */
   font-variation-settings: "FLAR" 0, "VOLM" 0, "slnt" 0;
   color: var(--text);
   background: var(--bg);
