@@ -160,40 +160,6 @@
   line-height: 1.25;
 }
 
-.whyCard {
-  height: 100%;
-  min-height: 220px;
-  padding: 1.4rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  backdrop-filter: blur(10px);
-  display: grid;
-  gap: 0.85rem;
-  align-content: start;
-}
-
-.whyIcon {
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 0.7rem;
-  background:
-    linear-gradient(135deg, rgba(110, 168, 255, 0.35), rgba(47, 107, 255, 0.9));
-  box-shadow: var(--glow);
-}
-
-.whyCard h3 {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: var(--font-weight-heading);
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-}
-
-.whyCard p {
-  color: var(--muted);
-}
-
 .partnerCard {
   display: grid;
   justify-items: center;

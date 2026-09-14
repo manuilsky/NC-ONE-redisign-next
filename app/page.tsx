@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Carousel } from "@/components/Carousel";
 import { ServicesAccordion } from "@/components/ServicesAccordion";
+import { WhyUsSection } from "@/components/WhyUsSection";
 import {
   about,
   finalCta,
@@ -70,24 +71,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="why-us" className="section">
-        <div className="container">
-          <p className="sectionLabel">[ почему мы ]</p>
-          <h2 className="sectionTitle">Почему мы</h2>
-          <p className="sectionLead">
-            Принципы работы, которые снимают неопределённость на каждом этапе.
-          </p>
-          <Carousel ariaLabel="Почему мы">
-            {whyUs.map((item) => (
-              <article key={item.id} className={styles.whyCard}>
-                <div className={styles.whyIcon} aria-hidden="true" />
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
-            ))}
-          </Carousel>
-        </div>
-      </section>
+      <WhyUsSection items={whyUs} />
 
       <section id="services" className="section">
         <div className="container">
