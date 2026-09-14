@@ -38,10 +38,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="about" className="section">
+      <section id="about" className={styles.about}>
         <div className={`container ${styles.aboutGrid}`}>
-          <div>
-            <p className="sectionLabel">{about.label}</p>
+          <div className={styles.aboutTextCol}>
+            <p className={styles.aboutLabel}>{about.label}</p>
             {about.paragraphs.map((paragraph) => (
               <p key={paragraph.slice(0, 24)} className={styles.aboutText}>
                 {paragraph}
@@ -55,7 +55,15 @@ export default function HomePage() {
             {stats.map((stat) => (
               <article key={stat.label} className={styles.statCard}>
                 <p className={styles.statValue}>{stat.value}</p>
-                <p className={styles.statLabel}>{stat.label}</p>
+                <p
+                  className={
+                    stat.compactLabel
+                      ? `${styles.statLabel} ${styles.statLabelCompact}`
+                      : styles.statLabel
+                  }
+                >
+                  {stat.label}
+                </p>
               </article>
             ))}
           </div>

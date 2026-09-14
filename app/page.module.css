@@ -65,54 +65,101 @@
   }
 }
 
+/* —— About (Figma 173:944) —— */
+.about {
+  padding: 6rem 0; /* 96px */
+}
+
 .aboutGrid {
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: start;
+  grid-template-columns: 28.75rem minmax(0, 45.25rem); /* 460 + 724 */
+  gap: 4rem; /* 64 */
+  align-items: center;
+  justify-content: space-between;
+}
+
+.aboutTextCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* 24 */
+  max-width: 28.75rem;
+}
+
+.aboutLabel {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-size: 0.75rem; /* 12 */
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.25;
 }
 
 .aboutText {
+  margin: 0;
   color: var(--muted);
-  margin-bottom: 1rem;
-  max-width: 36rem;
+  font-size: 1rem; /* 16 */
+  font-weight: 400;
+  line-height: 1.7;
+  text-align: justify;
 }
 
 .aboutCta {
-  margin-top: 1rem;
+  align-self: flex-start;
+  margin-top: 0;
 }
 
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.85rem;
+  grid-template-columns: repeat(3, 14.375rem); /* 230 */
+  gap: 1rem; /* 16 */
+  width: max-content;
+  max-width: 100%;
 }
 
 .statCard {
-  min-height: 7.5rem;
-  padding: 1.1rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  backdrop-filter: blur(8px);
-  display: grid;
-  align-content: space-between;
-  gap: 0.75rem;
+  box-sizing: border-box;
+  width: 14.375rem; /* 230 */
+  height: 11.34375rem; /* 181.5 */
+  padding: 2rem 1.5rem; /* 32 / 24 */
+  border-radius: 1rem; /* 16 */
+  border: 1px solid var(--border-glass);
+  /* Opaque page-bg under glass wash — Figma sits on solid #05060a, not blue glows */
+  background: var(--bg-glass), var(--bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-glass);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* 8 */
+  align-items: flex-start;
 }
 
 .statValue {
+  margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-size: 2rem; /* 32 */
   font-weight: var(--font-weight-stat);
   line-height: 1;
+  color: var(--text);
 }
 
 .statLabel {
+  margin: 0;
   color: var(--muted);
-  font-size: 0.82rem;
-  line-height: 1.35;
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-size: 0.875rem; /* 14 */
+  font-weight: 400;
+  line-height: 1.4;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+}
+
+.statLabelCompact {
+  font-size: 0.75rem; /* 12 */
+  letter-spacing: 0.08em;
+  line-height: 1.25;
 }
 
 .whyCard {
@@ -271,9 +318,33 @@
   color: #fff;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1200px) {
   .aboutGrid {
     grid-template-columns: 1fr;
+    gap: 2.5rem;
+    justify-content: stretch;
+  }
+
+  .aboutTextCol {
+    max-width: 36rem;
+  }
+
+  .statsGrid {
+    width: 100%;
+    max-width: 45.25rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .statCard {
+    width: auto;
+    height: auto;
+    min-height: 11.34375rem;
+  }
+}
+
+@media (max-width: 960px) {
+  .about {
+    padding: 4rem 0;
   }
 
   .statsGrid {
@@ -283,10 +354,15 @@
 
 @media (max-width: 560px) {
   .statsGrid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 
   .statCard {
-    min-height: 6.5rem;
+    min-height: 8.5rem;
+    width: 100%;
+  }
+
+  .aboutText {
+    text-align: left;
   }
 }

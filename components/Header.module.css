@@ -12,7 +12,9 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 1rem;
-  min-height: var(--header-h);
+  /* Figma Header: 113px, padding 32 / 48 */
+  min-height: 7.0625rem;
+  padding-block: 2rem;
 }
 
 .logo {
@@ -23,21 +25,25 @@
 
 .logoImage {
   width: auto;
-  height: 42px;
+  height: 2.5rem; /* Figma logo 40px */
   object-fit: contain;
 }
 
 .nav {
   display: flex;
   justify-content: center;
-  gap: clamp(0.75rem, 2vw, 1.5rem);
+  gap: 1.5rem; /* Figma Nav gap 24px */
   flex-wrap: wrap;
 }
 
 .navLink {
   color: var(--muted);
-  font-size: 0.92rem;
-  letter-spacing: 0.02em;
+  /* Figma: Commissioner Regular 14 / 150% */
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
   transition: color 0.2s ease;
 }
 
@@ -46,15 +52,19 @@
 }
 
 .cta {
-  min-height: 2.7rem;
-  padding-inline: 1.15rem;
-  font-size: 0.92rem;
+  /* Figma Button Label/14: Commissioner Medium 14 */
+  min-height: 3.0625rem; /* 49px */
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
   white-space: nowrap;
 }
 
 @media (max-width: 900px) {
   .inner {
     grid-template-columns: 1fr auto;
+    min-height: var(--header-h);
+    padding-block: 0;
   }
 
   .nav {
@@ -62,6 +72,6 @@
   }
 
   .logoImage {
-    height: 36px;
+    height: 2.25rem;
   }
 }

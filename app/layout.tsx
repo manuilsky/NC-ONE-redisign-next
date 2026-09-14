@@ -6,11 +6,15 @@ import { ScrollVideoBackground } from "@/components/ScrollVideoBackground";
 import { SCROLL_BG_POSTER, SCROLL_BG_VIDEO } from "@/data/media";
 import "./globals.css";
 
-/* Figma body/labels/buttons: Commissioner Regular / Medium / SemiBold */
+/**
+ * Figma uses Commissioner as a variable font with FLAR/VOLM/slnt = 0.
+ * Static weight files look slightly different from that cut.
+ */
 const body = Commissioner({
   subsets: ["latin", "cyrillic"],
   variable: "--font-body",
-  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  axes: ["FLAR", "VOLM", "slnt"],
 });
 
 export const metadata: Metadata = {
@@ -29,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" className={body.variable}>
-      <body>
+      <body className={body.className}>
         <div className="site">
           <ScrollVideoBackground
             src={SCROLL_BG_VIDEO || undefined}
