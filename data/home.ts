@@ -194,24 +194,43 @@ export const services: ServiceItem[] = [
     number: "04",
     title: "Data Engineering и Highload системы",
     description:
-      "Потоки данных, аналитика и высоконагруженные сервисы с предсказуемой производительностью.",
-    tags: ["Kafka", "ClickHouse", "Redis", "Kubernetes", "ETL", "Observability"],
+      "Проектируем системы для сбора, обработки и анализа больших объемов данных. Создаем ETL/ELT-пайплайны, потоковую обработку данных, аналитическую инфраструктуру и архитектуру для высоконагруженных сервисов.",
+    tags: [
+      "Apache Kafka",
+      "Apache Spark",
+      "Apache Airflow",
+      "Polars",
+      "dbt",
+      "PostgreSQL",
+      "Redis",
+      "MongoDB",
+      "ClickHouse",
+      "Elasticsearch",
+    ],
   },
   {
     id: "devops",
     number: "05",
     title: "DevOps, Cloud и инфраструктурная безопасность",
     description:
-      "CI/CD, облачная инфраструктура, мониторинг и практики безопасности для продакшена.",
-    tags: ["AWS", "GCP", "Terraform", "GitHub Actions", "Prometheus", "Security"],
+      "Проектируем отказоустойчивую cloud-инфраструктуру, автоматизируем CI/CD и развертывание приложений. Настраиваем контейнеризацию, Kubernetes-кластеры и масштабирование сервисов, внедряем Zero Trust и защищаем инфраструктуру от DDoS-атак.",
+      tags: [
+        "AWS",
+        "Google Cloud",
+        "Docker",
+        "Kubernetes",
+        "Terraform",
+        "CI/CD pipelines",
+      ],
   },
   {
     id: "audit",
     number: "06",
     title: "Аудит, модернизация и поддержка ПО",
     description:
-      "Аудит легаси, план модернизации, рефакторинг и сопровождение критичных систем.",
-    tags: ["Architecture Review", "Refactoring", "SLA", "Support", "Migration"],
+      "Проводим технический аудит существующих систем, рефакторинг и модернизацию legacy-проектов. Оптимизируем производительность, повышаем отказоустойчивость, настраиваем тестирование и помогаем перенести продукты на современную архитектуру. Берем системы на дальнейшее развитие и техническую поддержку.",
+    tags: [    
+    ],
   },
 ];
 
