@@ -1,16 +1,13 @@
 import Link from "next/link";
 import { Carousel } from "@/components/Carousel";
-import { ServicesAccordion } from "@/components/ServicesAccordion";
+import { ServicesSection } from "@/components/ServicesSection";
 import { WhyUsSection } from "@/components/WhyUsSection";
 import {
   about,
   finalCta,
   hero,
   homeProjects,
-  partnerCta,
   projectsSection,
-  services,
-  servicesIntro,
   stats,
   whyUs,
 } from "@/data/home";
@@ -73,37 +70,7 @@ export default function HomePage() {
 
       <WhyUsSection items={whyUs} />
 
-      <section id="services" className="section">
-        <div className="container">
-          <p className="sectionLabel">{servicesIntro.label}</p>
-          <h2 className="sectionTitle">{servicesIntro.title}</h2>
-          <p className="sectionLead">{servicesIntro.lead}</p>
-          <ServicesAccordion items={services} />
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container">
-          <div className={styles.partnerCard}>
-            <p className="sectionLabel">{partnerCta.label}</p>
-            <h2 className={styles.partnerTitle}>
-              {partnerCta.titleBefore}
-              <span className="textAccent">{partnerCta.titleAccent}</span>
-              {partnerCta.titleAfter}
-            </h2>
-            <div className={styles.partnerTags}>
-              {partnerCta.tags.map((tag) => (
-                <span key={tag} className="tag tagOutline">
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <Link href="/#contact" className="button">
-              {partnerCta.cta} <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <ServicesSection />
 
       <section id="projects" className="section">
         <div className="container">

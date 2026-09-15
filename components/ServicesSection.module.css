@@ -1,0 +1,158 @@
+.section {
+  position: relative;
+  padding: 6rem 0;
+}
+
+.inner {
+  width: min(100% - 2.5rem, var(--container));
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 78rem;
+}
+
+.label {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.25;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-weight: var(--font-weight-heading);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--text);
+  max-width: 20ch;
+}
+
+.lead {
+  margin: 0;
+  max-width: 52rem;
+  color: var(--muted);
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+.more {
+  margin: 0;
+  max-width: 58rem;
+  color: var(--muted);
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.partnerCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 5vw, 5rem);
+  border-radius: 2rem;
+  border: 1px solid var(--border-glass);
+  background: var(--bg-glass), var(--bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-glass);
+  text-align: center;
+}
+
+.partnerLabel {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.25;
+}
+
+.partnerTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: var(--font-weight-heading);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--text);
+  max-width: 16ch;
+}
+
+.partnerText {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--muted);
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+.partnerTags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.partnerChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  border: 1px solid rgba(130, 165, 255, 0.35);
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-stat);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.partnerCta {
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding: 4rem 0;
+  }
+
+  .inner {
+    width: min(100% - 1.5rem, var(--container));
+    gap: 2rem;
+  }
+
+  .title {
+    font-size: clamp(1.85rem, 9vw, 2.5rem);
+  }
+
+  .partnerTitle {
+    max-width: none;
+  }
+}

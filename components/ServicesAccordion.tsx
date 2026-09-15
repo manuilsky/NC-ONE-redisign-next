@@ -8,39 +8,110 @@ type ServicesAccordionProps = {
   items: ServiceItem[];
 };
 
+function IconPlus() {
+  return (
+    <svg
+      className={styles.iconSvg}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M12 5V19M5 12H19"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconMinus() {
+  return (
+    <svg
+      className={styles.iconSvg}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5 12H19"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function ServicesAccordion({ items }: ServicesAccordionProps) {
-  const [openId, setOpenId] = useState<string | null>(items[0]?.id ?? null);
+  const [openIds, setOpenIds] = useState<Set<string>>(
+    () => new Set(items.slice(0, 2).map((item) => item.id)),
+  );
+
+  const toggle = (id: string) => {
+    setOpenIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   return (
     <div className={styles.list}>
       {items.map((item) => {
-        const open = item.id === openId;
+        const open = openIds.has(item.id);
+        const panelId = `service-panel-${item.id}`;
+        const headerId = `service-header-${item.id}`;
+
         return (
-          <article key={item.id} className={styles.item}>
-            <button
-              type="button"
-              className={styles.header}
-              aria-expanded={open}
-              onClick={() => setOpenId(open ? null : item.id)}
+          <article
+            key={item.id}
+            className={open ? `${styles.item} ${styles.itemOpen}` : styles.item}
+          >
+            <h3 className={styles.heading}>
+              <button
+                id={headerId}
+                type="button"
+                className={styles.header}
+                aria-expanded={open}
+                aria-controls={panelId}
+                onClick={() => toggle(item.id)}
+              >
+                <span className={styles.number}>{item.number}</span>
+                <span className={styles.title}>{item.title}</span>
+                <span
+                  className={open ? styles.toggleOpen : styles.toggle}
+                  aria-hidden="true"
+                >
+                  {open ? <IconMinus /> : <IconPlus />}
+                </span>
+              </button>
+            </h3>
+
+            <div
+              id={panelId}
+              role="region"
+              aria-labelledby={headerId}
+              className={open ? styles.panel : styles.panelCollapsed}
+              hidden={!open}
             >
-              <span className={styles.number}>{item.number}</span>
-              <span className={styles.title}>{item.title}</span>
-              <span className={open ? styles.iconOpen : styles.icon} aria-hidden="true">
-                {open ? "−" : "+"}
-              </span>
-            </button>
-            {open ? (
-              <div className={styles.body}>
-                <p>{item.description}</p>
-                <div className={styles.tags}>
-                  {item.tags.map((tag) => (
-                    <span key={tag} className="tag">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+              <p className={styles.description}>{item.description}</p>
+              <div className={styles.tags}>
+                {item.tags.map((tag) => (
+                  <span key={tag} className={styles.chip}>
+                    {tag}
+                  </span>
+                ))}
               </div>
-            ) : null}
+            </div>
           </article>
         );
       })}
