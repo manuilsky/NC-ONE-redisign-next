@@ -237,7 +237,7 @@ button {
   color: #fff;
   font-family: var(--font-display);
   font-size: 0.72rem;
-  font-weight: var(--font-weight-stat);
+  font-weight: 400;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   white-space: nowrap;
