@@ -9,25 +9,53 @@ type CarouselProps = {
   className?: string;
 };
 
-function slideOffset(track: HTMLDivElement, slide: HTMLElement) {
-  const first = track.children[0] as HTMLElement | undefined;
-  if (!first) return 0;
-  return slide.offsetLeft - first.offsetLeft;
+function slideSpan(track: HTMLDivElement) {
+  const slides = Array.from(track.children) as HTMLElement[];
+  if (slides.length < 2) return slides[0]?.offsetWidth ?? 0;
+  return slides[1].offsetLeft - slides[0].offsetLeft;
+}
+
+function metrics(track: HTMLDivElement, count: number) {
+  const span = slideSpan(track);
+  const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+  const hidden =
+    span > 0 ? Math.min(Math.max(0, count - 1), Math.round(maxScroll / span)) : 0;
+  const pageCount = hidden + 1;
+  const index = span > 0 ? Math.round(track.scrollLeft / span) : 0;
+
+  return {
+    span,
+    pageCount,
+    index: Math.min(Math.max(0, index), pageCount - 1),
+  };
 }
 
 export function Carousel({ children, ariaLabel, className }: CarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
-  const [index, setIndex] = useState(0);
   const count = children.length;
+  const [index, setIndex] = useState(0);
+  const [pageCount, setPageCount] = useState(1);
 
-  const scrollToIndex = (next: number) => {
+  const syncFromTrack = () => {
     const track = trackRef.current;
-    if (!track) return;
-    const clamped = ((next % count) + count) % count;
-    const child = track.children[clamped] as HTMLElement | undefined;
-    if (!child) return;
-    track.scrollTo({ left: slideOffset(track, child), behavior: "smooth" });
+    if (!track) return null;
+    const next = metrics(track, count);
+    setPageCount(next.pageCount);
+    setIndex(next.index);
+    return next;
+  };
+
+  const scrollToIndex = (next: number, wrap = false) => {
+    const track = trackRef.current;
+    if (!track || count === 0) return;
+    const { pageCount: pages, span } = metrics(track, count);
+    const last = pages - 1;
+    const clamped = wrap
+      ? ((next % pages) + pages) % pages
+      : Math.min(Math.max(0, next), last);
+    track.scrollTo({ left: clamped * span, behavior: "smooth" });
     setIndex(clamped);
+    setPageCount(pages);
   };
 
   useEffect(() => {
@@ -35,25 +63,18 @@ export function Carousel({ children, ariaLabel, className }: CarouselProps) {
     if (!track) return;
 
     const onScroll = () => {
-      const childrenEls = Array.from(track.children) as HTMLElement[];
-      if (!childrenEls.length) return;
-      const center = track.scrollLeft + track.clientWidth / 2;
-      let best = 0;
-      let bestDist = Infinity;
-      childrenEls.forEach((el, i) => {
-        const mid = slideOffset(track, el) + el.offsetWidth / 2;
-        const dist = Math.abs(mid - center);
-        if (dist < bestDist) {
-          bestDist = dist;
-          best = i;
-        }
-      });
-      setIndex(best);
+      syncFromTrack();
     };
 
+    onScroll();
     track.addEventListener("scroll", onScroll, { passive: true });
-    return () => track.removeEventListener("scroll", onScroll);
-  }, []);
+    const ro = new ResizeObserver(onScroll);
+    ro.observe(track);
+    return () => {
+      track.removeEventListener("scroll", onScroll);
+      ro.disconnect();
+    };
+  }, [count]);
 
   return (
     <div className={[styles.root, className].filter(Boolean).join(" ")}>
@@ -67,11 +88,11 @@ export function Carousel({ children, ariaLabel, className }: CarouselProps) {
         onKeyDown={(e) => {
           if (e.key === "ArrowRight") {
             e.preventDefault();
-            scrollToIndex(index + 1);
+            scrollToIndex(index + 1, true);
           }
           if (e.key === "ArrowLeft") {
             e.preventDefault();
-            scrollToIndex(index - 1);
+            scrollToIndex(index - 1, true);
           }
         }}
       >
@@ -87,12 +108,12 @@ export function Carousel({ children, ariaLabel, className }: CarouselProps) {
           type="button"
           className={styles.navBtn}
           aria-label="Предыдущий слайд"
-          onClick={() => scrollToIndex(index - 1)}
+          onClick={() => scrollToIndex(index - 1, true)}
         >
           ←
         </button>
         <div className={styles.dots} role="tablist" aria-label="Слайды">
-          {children.map((_, i) => (
+          {Array.from({ length: pageCount }, (_, i) => (
             <button
               key={i}
               type="button"
@@ -108,7 +129,7 @@ export function Carousel({ children, ariaLabel, className }: CarouselProps) {
           type="button"
           className={styles.navBtn}
           aria-label="Следующий слайд"
-          onClick={() => scrollToIndex(index + 1)}
+          onClick={() => scrollToIndex(index + 1, true)}
         >
           →
         </button>

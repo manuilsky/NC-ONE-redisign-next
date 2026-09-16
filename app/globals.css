@@ -21,7 +21,7 @@
   --accent-3: #004bdd;
   --accent-soft: rgba(45, 107, 255, 0.18);
   --btn-gradient: linear-gradient(90deg, #6e8bff 0%, #2d6bff 50%, #004bdd 100%);
-  --title-gradient: linear-gradient(90deg, #6e8bff 0%, #2d6bff 50%, #004bdd 100%);
+  --title-gradient: linear-gradient(139.99deg, #6e8bff 14.55%, #2d6bff 53.58%, #004bdd 85.52%);
   --border: rgba(255, 255, 255, 0.12);
   --border-strong: rgba(255, 255, 255, 0.22);
   --radius: 16px;
@@ -275,6 +275,9 @@ button {
 }
 
 .textAccent {
+  display: inline-block;
+  width: max-content;
+  max-width: 100%;
   background-image: var(--title-gradient);
   -webkit-background-clip: text;
   background-clip: text;
