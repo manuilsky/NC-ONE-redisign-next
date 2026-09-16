@@ -25,9 +25,12 @@ export function ServicesSection() {
         <div className={styles.partnerCard}>
           <p className={styles.partnerLabel}>{partnerCta.label}</p>
           <h2 className={styles.partnerTitle}>
-            {partnerCta.titleBefore}
-            <span className="textAccent">{partnerCta.titleAccent}</span>
-            {partnerCta.titleAfter}
+            <span className={styles.partnerTitleLine}>
+              {partnerCta.titleLine}
+            </span>
+            <span className={`textAccent ${styles.partnerTitleLine}`}>
+              {partnerCta.titleAccent}
+            </span>
           </h2>
           <p className={styles.partnerText}>{partnerCta.text}</p>
           <div className={styles.partnerTags}>

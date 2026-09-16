@@ -63,17 +63,20 @@
 }
 
 .partnerCard {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 5vw, 5rem);
+  width: 100%;
+  height: 33.625rem;
+  padding: 4.5rem 5rem;
   border-radius: 2rem;
-  border: 1px solid var(--border-glass);
-  background: var(--bg-glass), var(--bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: var(--shadow-glass);
+  border: 1px solid rgba(255, 255, 255, 0.078);
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  overflow: hidden;
   text-align: center;
 }
 
@@ -89,20 +92,29 @@
 }
 
 .partnerTitle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0;
+  width: 47.5rem;
+  max-width: 100%;
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-size: 2.75rem;
   font-weight: var(--font-weight-heading);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  line-height: 1.15;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--text);
-  max-width: 16ch;
+}
+
+.partnerTitleLine {
+  display: block;
 }
 
 .partnerText {
   margin: 0;
-  max-width: 42rem;
+  width: 35rem;
+  max-width: 100%;
   color: var(--muted);
   font-family: var(--font-body), "Segoe UI", sans-serif;
   font-size: 1rem;
@@ -114,29 +126,59 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-content: flex-start;
   gap: 0.5rem;
+  width: 100%;
 }
 
 .partnerChip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  height: 1.5625rem;
   padding: 0.25rem 0.625rem;
   border-radius: 999px;
   border: 1px solid rgba(130, 165, 255, 0.35);
-  background: transparent;
+  background: linear-gradient(
+    90deg,
+    rgba(110, 139, 255, 0.55) 0%,
+    rgba(0, 75, 221, 0.35) 100%
+  );
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
   color: #fff;
   font-family: var(--font-display);
   font-size: 0.6875rem;
   font-weight: 400;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  line-height: 1.4;
+  line-height: 1;
   white-space: nowrap;
 }
 
 .partnerCta {
-  margin-top: 0.25rem;
+  margin-top: 0;
+}
+
+@media (max-width: 1199px) {
+  .partnerCard {
+    height: auto;
+    padding: 3.5rem 2.5rem;
+  }
+
+  .partnerLabel {
+    align-self: stretch;
+    text-align: left;
+  }
+
+  .partnerTitle {
+    width: 100%;
+    font-size: 2.1875rem;
+  }
+
+  .partnerText {
+    width: 100%;
+  }
 }
 
 @media (max-width: 720px) {
@@ -153,7 +195,11 @@
     font-size: clamp(1.85rem, 9vw, 2.5rem);
   }
 
+  .partnerCard {
+    padding: 3rem 1.5rem;
+  }
+
   .partnerTitle {
-    max-width: none;
+    font-size: 1.125rem;
   }
 }
