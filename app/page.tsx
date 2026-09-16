@@ -1,16 +1,8 @@
 import Link from "next/link";
-import { Carousel } from "@/components/Carousel";
+import { ProjectsSection } from "@/components/ProjectsSection";
 import { ServicesSection } from "@/components/ServicesSection";
 import { WhyUsSection } from "@/components/WhyUsSection";
-import {
-  about,
-  finalCta,
-  hero,
-  homeProjects,
-  projectsSection,
-  stats,
-  whyUs,
-} from "@/data/home";
+import { about, finalCta, hero, stats, whyUs } from "@/data/home";
 import styles from "./page.module.css";
 
 export default function HomePage() {
@@ -72,40 +64,7 @@ export default function HomePage() {
 
       <ServicesSection />
 
-      <section id="projects" className="section">
-        <div className="container">
-          <div className={styles.projectsHead}>
-            <div>
-              <p className="sectionLabel">{projectsSection.label}</p>
-              <h2 className="sectionTitle">{projectsSection.title}</h2>
-            </div>
-            <Link href="/projects" className="button buttonGhost">
-              {projectsSection.cta} <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-          <Carousel ariaLabel="Наши проекты">
-            {homeProjects.map((project) => (
-              <article key={project.slug} className={styles.projectCard}>
-                <div className={styles.projectVisual} aria-hidden="true">
-                  <span>{project.mark}</span>
-                </div>
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <div className={styles.projectTags}>
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="tag">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <Link href={`/projects/${project.slug}`} className={styles.projectLink}>
-                  Смотреть кейс →
-                </Link>
-              </article>
-            ))}
-          </Carousel>
-        </div>
-      </section>
+      <ProjectsSection />
 
       <section id="contact" className="section">
         <div className="container">

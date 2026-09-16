@@ -160,69 +160,6 @@
   line-height: 1.25;
 }
 
-.projectsHead {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
-}
-
-.projectCard {
-  height: 100%;
-  display: grid;
-  gap: 0.85rem;
-  padding: 1rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  backdrop-filter: blur(10px);
-}
-
-.projectVisual {
-  aspect-ratio: 16 / 10;
-  border-radius: calc(var(--radius) - 4px);
-  display: grid;
-  place-items: center;
-  background:
-    radial-gradient(circle at 30% 20%, rgba(110, 168, 255, 0.45), transparent 45%),
-    linear-gradient(145deg, #1a2a55, #0b1020 60%, #151515);
-  font-family: var(--font-display);
-  font-size: 3rem;
-  font-weight: var(--font-weight-display-bold);
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.projectCard h3 {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: var(--font-weight-heading);
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-}
-
-.projectCard p {
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-.projectTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.projectLink {
-  color: var(--accent-2);
-  font-weight: 600;
-  margin-top: 0.25rem;
-}
-
-.projectLink:hover {
-  color: #fff;
-}
-
 .contactCard {
   display: grid;
   gap: 1.25rem;

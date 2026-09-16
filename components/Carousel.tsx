@@ -9,6 +9,12 @@ type CarouselProps = {
   className?: string;
 };
 
+function slideOffset(track: HTMLDivElement, slide: HTMLElement) {
+  const first = track.children[0] as HTMLElement | undefined;
+  if (!first) return 0;
+  return slide.offsetLeft - first.offsetLeft;
+}
+
 export function Carousel({ children, ariaLabel, className }: CarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
@@ -20,7 +26,7 @@ export function Carousel({ children, ariaLabel, className }: CarouselProps) {
     const clamped = ((next % count) + count) % count;
     const child = track.children[clamped] as HTMLElement | undefined;
     if (!child) return;
-    track.scrollTo({ left: child.offsetLeft, behavior: "smooth" });
+    track.scrollTo({ left: slideOffset(track, child), behavior: "smooth" });
     setIndex(clamped);
   };
 
@@ -35,7 +41,7 @@ export function Carousel({ children, ariaLabel, className }: CarouselProps) {
       let best = 0;
       let bestDist = Infinity;
       childrenEls.forEach((el, i) => {
-        const mid = el.offsetLeft + el.offsetWidth / 2;
+        const mid = slideOffset(track, el) + el.offsetWidth / 2;
         const dist = Math.abs(mid - center);
         if (dist < bestDist) {
           bestDist = dist;

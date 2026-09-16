@@ -35,7 +35,7 @@ export function ServicesSection() {
           <p className={styles.partnerText}>{partnerCta.text}</p>
           <div className={styles.partnerTags}>
             {partnerCta.tags.map((tag) => (
-              <span key={tag} className={styles.partnerChip}>
+              <span key={tag} className="techChip">
                 {tag}
               </span>
             ))}

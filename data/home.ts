@@ -21,14 +21,6 @@ export type ServiceItem = {
   tags: string[];
 };
 
-export type HomeProject = {
-  slug: string;
-  title: string;
-  description: string;
-  tags: string[];
-  mark: string;
-};
-
 export const hero = {
   titleLines: ["Архитектура", "цифрового", "будущего"] as const,
   accentLineIndex: 1,
@@ -248,52 +240,10 @@ export const partnerCta = {
 
 export const projectsSection = {
   label: "[ портфолио ]",
-  title: "Наши проекты говорят за нас",
-  cta: "Все проекты",
+  titleLine: "Наши проекты",
+  titleAccent: "говорят за нас",
+  cta: "Больше проектов",
 };
-
-export const homeProjects: HomeProject[] = [
-  {
-    slug: "novakids",
-    title: "NovaKids",
-    description:
-      "Мобильное приложение для детей 7–10 лет с игровыми сценариями и computer vision.",
-    tags: ["Flutter", "Dart", "REST API", "Computer Vision"],
-    mark: "N",
-  },
-  {
-    slug: "ai-beauty-advisor",
-    title: "AI Beauty Advisor",
-    description:
-      "Онлайн-сервис анализа кожи по селфи и персональных рекомендаций.",
-    tags: ["TypeScript", "React", "Effector", "Computer Vision"],
-    mark: "A",
-  },
-  {
-    slug: "cabinet-wb",
-    title: "Кабинет WB",
-    description:
-      "SaaS-платформа аналитики для продавцов Wildberries: метрики, отчёты, рост продаж.",
-    tags: ["Next.js", "React", "Redux"],
-    mark: "W",
-  },
-  {
-    slug: "vodabro",
-    title: "Водабро",
-    description:
-      "Цифровой сервис для управления доставкой и подписками на воду.",
-    tags: ["React", "Node.js", "PostgreSQL"],
-    mark: "V",
-  },
-  {
-    slug: "masters-dom",
-    title: "Masters:Dom",
-    description:
-      "Платформа для поиска мастеров и управления заявками в сфере услуг.",
-    tags: ["Next.js", "TypeScript", "NestJS"],
-    mark: "M",
-  },
-];
 
 export const finalCta = {
   title: "Готовы запустить ваш проект?",
