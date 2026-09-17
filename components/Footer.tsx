@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { footer } from "@/data/home";
 import styles from "./Footer.module.css";
 
 export function Footer() {
@@ -6,17 +7,18 @@ export function Footer() {
 
   return (
     <footer className={styles.footer}>
-      <div className={`container ${styles.inner}`}>
-        <div>
-          <p className={styles.brand}>НК 1</p>
-          <p className={styles.muted}>новая компания один</p>
-        </div>
-        <nav className={styles.links} aria-label="Навигация в подвале">
-          <Link href="/projects">Проекты</Link>
-          <Link href="/#services">Услуги</Link>
-          <Link href="/#contact">Контакты</Link>
+      <div className={styles.inner}>
+        <p className={styles.copy}>
+          © {footer.copyrightFrom} — {year} {footer.entity}
+        </p>
+        <nav className={styles.links} aria-label="Юридическая информация">
+          {footer.links.map((link) => (
+            <Link key={link.href} href={link.href}>
+              {link.label}
+            </Link>
+          ))}
         </nav>
-        <p className={styles.muted}>© {year}. NC 1</p>
+        <p className={styles.rights}>{footer.rights}</p>
       </div>
     </footer>
   );

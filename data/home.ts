@@ -264,3 +264,14 @@ export const finalCta = {
     submit: "Отправить заявку",
   },
 };
+
+export const footer = {
+  copyrightFrom: 2019,
+  entity: "НК 1 · ИП Меньщиков А.В. · ИНН 744725041870",
+  rights: "Все права защищены",
+  links: [
+    { href: "/privacy", label: "Политика конфиденциальности" },
+    { href: "/cookies", label: "Использование cookie" },
+    { href: "/requisites", label: "Реквизиты" },
+  ],
+};

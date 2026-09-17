@@ -1,39 +1,112 @@
 .footer {
   position: relative;
   z-index: 1;
-  border-top: 1px solid var(--border);
-  padding: 2.5rem 0;
-  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 5.125rem;
+  padding-block: 1.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.078);
+  background: var(--bg);
 }
 
 .inner {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   gap: 1.5rem;
-  flex-wrap: wrap;
+  width: min(100% - 2.5rem, var(--container));
+  margin-inline: auto;
 }
 
-.brand {
-  font-family: var(--font-display);
-  font-weight: var(--font-weight-heading);
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  margin-bottom: 0.35rem;
-}
-
-.muted {
+.copy,
+.rights,
+.links a {
+  margin: 0;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-family: var(--font-body), "Segoe UI", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.copy,
+.rights {
+  line-height: 1.4;
+}
+
+.copy {
+  flex: 0 1 auto;
+}
+
+.rights {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .links {
   display: flex;
-  gap: 1.25rem;
-  flex-wrap: wrap;
-  color: var(--muted);
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.links a:hover {
+.links a {
+  line-height: 1.25;
+  transition: color 0.2s ease;
+}
+
+.links a:hover,
+.links a:focus-visible {
   color: var(--text);
+}
+
+.links a:focus-visible {
+  outline: 1px solid rgba(110, 139, 255, 0.7);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1200px) {
+  .footer {
+    min-height: 8.125rem;
+  }
+
+  .inner {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    width: min(100% - 3rem, var(--container));
+    text-align: center;
+  }
+
+  .copy,
+  .rights {
+    width: 100%;
+  }
+
+  .links {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .footer {
+    min-height: 10.625rem;
+  }
+
+  .inner {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .links {
+    justify-content: flex-start;
+  }
+
+  .rights {
+    white-space: normal;
+  }
 }
