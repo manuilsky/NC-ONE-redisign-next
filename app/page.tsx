@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { ContactSection } from "@/components/ContactSection";
 import { ProjectsSection } from "@/components/ProjectsSection";
 import { ServicesSection } from "@/components/ServicesSection";
 import { WhyUsSection } from "@/components/WhyUsSection";
-import { about, finalCta, hero, stats, whyUs } from "@/data/home";
+import { about, hero, stats, whyUs } from "@/data/home";
 import styles from "./page.module.css";
 
 export default function HomePage() {
@@ -66,23 +67,7 @@ export default function HomePage() {
 
       <ProjectsSection />
 
-      <section id="contact" className="section">
-        <div className="container">
-          <div className={styles.contactCard}>
-            <h2 className="sectionTitle">{finalCta.title}</h2>
-            <p className={styles.contactText}>{finalCta.text}</p>
-            <div className={styles.contactRows}>
-              <a href={`tel:${finalCta.phone.replace(/[^\d+]/g, "")}`}>
-                {finalCta.phone}
-              </a>
-              <a href={`mailto:${finalCta.email}`}>{finalCta.email}</a>
-            </div>
-            <a href={`mailto:${finalCta.email}`} className="button">
-              {finalCta.cta} <span aria-hidden="true">→</span>
-            </a>
-          </div>
-        </div>
-      </section>
+      <ContactSection />
     </>
   );
 }

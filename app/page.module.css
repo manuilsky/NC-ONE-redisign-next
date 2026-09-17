@@ -160,37 +160,6 @@
   line-height: 1.25;
 }
 
-.contactCard {
-  display: grid;
-  gap: 1.25rem;
-  justify-items: start;
-  padding: clamp(2rem, 5vw, 3rem);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  background: var(--bg-elevated);
-  backdrop-filter: blur(10px);
-}
-
-.contactText {
-  color: var(--muted);
-  max-width: 36rem;
-}
-
-.contactRows {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.contactRows a {
-  color: var(--accent-2);
-  font-size: 1.15rem;
-  font-weight: 600;
-}
-
-.contactRows a:hover {
-  color: #fff;
-}
-
 @media (max-width: 1200px) {
   .aboutGrid {
     grid-template-columns: 1fr;

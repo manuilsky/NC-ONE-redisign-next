@@ -246,9 +246,21 @@ export const projectsSection = {
 };
 
 export const finalCta = {
-  title: "Готовы запустить ваш проект?",
-  text: "Опишите задачу — вернёмся с оценкой и предложением по команде.",
-  phone: "+7 (000) 000-00-00",
-  email: "hello@nc-one.example",
-  cta: "Связаться с нами",
+  label: "[ свяжитесь с нами ]",
+  titleLines: ["Готовы", "запустить", "ваш проект?"] as const,
+  accentLineIndex: 1,
+  text: "Расскажите о задаче — составим уникальное предложение и подберём оптимальный бюджет.",
+  phone: "+7 916 945 7964",
+  phoneHref: "tel:+79169457964",
+  email: "info@ncomsoft.ru",
+  telegramLabel: "Telegram  @Ncomsoft1",
+  telegramHref: "https://t.me/Ncomsoft1",
+  form: {
+    name: "Имя",
+    email: "email@mail.com",
+    phone: "+0 000 000 0000",
+    comment: "Комментарий",
+    consent: "Я даю согласие на обработку персональных данных",
+    submit: "Отправить заявку",
+  },
 };
