@@ -17,6 +17,7 @@
 
 .heroTitle {
   display: grid;
+  justify-items: center;
   gap: 0.125rem;
   margin: 0;
   font-family: var(--font-display);
@@ -30,6 +31,8 @@
 
 .heroTitle span {
   display: block;
+  width: max-content;
+  max-width: 100%;
 }
 
 .heroLead {
