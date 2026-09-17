@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ContactSection } from "@/components/ContactSection";
 import { ProjectsSection } from "@/components/ProjectsSection";
+import { Reveal } from "@/components/Reveal";
 import { ServicesSection } from "@/components/ServicesSection";
 import { WhyUsSection } from "@/components/WhyUsSection";
 import { about, hero, stats, whyUs } from "@/data/home";
@@ -11,7 +12,7 @@ export default function HomePage() {
     <>
       <section className={styles.hero}>
         <div className={styles.heroInner}>
-          <h1 className={styles.heroTitle}>
+          <Reveal as="h1" className={styles.heroTitle} distance="lg">
             {hero.titleLines.map((line, i) => (
               <span
                 key={line}
@@ -20,31 +21,51 @@ export default function HomePage() {
                 {line}
               </span>
             ))}
-          </h1>
-          <p className={styles.heroLead}>{hero.subtitle}</p>
-          <Link href="/#contact" className="button">
-            {hero.cta} <span aria-hidden="true">→</span>
-          </Link>
-          <p className={styles.scrollHint}>{hero.scrollHint}</p>
+          </Reveal>
+          <Reveal as="p" className={styles.heroLead} delay={120}>
+            {hero.subtitle}
+          </Reveal>
+          <Reveal delay={200}>
+            <Link href="/#contact" className="button">
+              {hero.cta} <span aria-hidden="true">→</span>
+            </Link>
+          </Reveal>
+          <Reveal as="p" className={styles.scrollHint} delay={280}>
+            {hero.scrollHint}
+          </Reveal>
         </div>
       </section>
 
       <section id="about" className={styles.about}>
         <div className={`container ${styles.aboutGrid}`}>
           <div className={styles.aboutTextCol}>
-            <p className={styles.aboutLabel}>{about.label}</p>
-            {about.paragraphs.map((paragraph) => (
-              <p key={paragraph.slice(0, 24)} className={styles.aboutText}>
+            <Reveal as="p" className={styles.aboutLabel}>
+              {about.label}
+            </Reveal>
+            {about.paragraphs.map((paragraph, i) => (
+              <Reveal
+                as="p"
+                key={paragraph.slice(0, 24)}
+                className={styles.aboutText}
+                delay={80 + i * 80}
+              >
                 {paragraph}
-              </p>
+              </Reveal>
             ))}
-            <Link href="/#contact" className={`button ${styles.aboutCta}`}>
-              {about.cta} <span aria-hidden="true">→</span>
-            </Link>
+            <Reveal delay={240} className={styles.aboutCta}>
+              <Link href="/#contact" className="button">
+                {about.cta} <span aria-hidden="true">→</span>
+              </Link>
+            </Reveal>
           </div>
           <div className={styles.statsGrid}>
-            {stats.map((stat) => (
-              <article key={stat.label} className={styles.statCard}>
+            {stats.map((stat, i) => (
+              <Reveal
+                as="article"
+                key={stat.label}
+                className={styles.statCard}
+                delay={i * 70}
+              >
                 <p className={styles.statValue}>{stat.value}</p>
                 <p
                   className={
@@ -55,7 +76,7 @@ export default function HomePage() {
                 >
                   {stat.label}
                 </p>
-              </article>
+              </Reveal>
             ))}
           </div>
         </div>

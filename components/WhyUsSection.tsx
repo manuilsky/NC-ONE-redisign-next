@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { WhyUsItem } from "@/data/home";
 import { whyUsIntro } from "@/data/home";
+import { Reveal } from "@/components/Reveal";
 import styles from "./WhyUsSection.module.css";
 
 type WhyUsSectionProps = {
@@ -46,21 +47,46 @@ export function WhyUsSection({ items }: WhyUsSectionProps) {
     const track = trackRef.current;
     if (!section || !sticky || !track) return;
 
+    const revealCards = () => {
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+      const headerH = parseFloat(getComputedStyle(sticky).top) || 0;
+      let stagger = 0;
+
+      for (const node of track.children) {
+        const card = node as HTMLElement;
+        if (card.classList.contains(styles.cardVisible)) continue;
+
+        const rect = card.getBoundingClientRect();
+        const visibleW = Math.min(rect.right, vw) - Math.max(rect.left, 0);
+        const visibleH =
+          Math.min(rect.bottom, vh) - Math.max(rect.top, headerH);
+        const enoughY = visibleH > rect.height * 0.3;
+        const peeking = visibleW > rect.width * 0.12;
+
+        if (!enoughY || !peeking) continue;
+
+        card.style.setProperty("--card-reveal-delay", `${stagger * 40}ms`);
+        card.classList.add(styles.cardVisible);
+        stagger += 1;
+      }
+    };
+
     let raf = 0;
     const update = () => {
       raf = 0;
       if (scrollDistance <= 0) {
         track.style.transform = "translate3d(0,0,0)";
-        return;
+      } else {
+        const sectionTop = section.getBoundingClientRect().top;
+        const stickyTop = parseFloat(getComputedStyle(sticky).top) || 0;
+        const scrolled = Math.min(
+          Math.max(-sectionTop + stickyTop, 0),
+          scrollDistance,
+        );
+        track.style.transform = `translate3d(${-scrolled}px, 0, 0)`;
       }
-
-      const sectionTop = section.getBoundingClientRect().top;
-      const stickyTop = parseFloat(getComputedStyle(sticky).top) || 0;
-      const scrolled = Math.min(
-        Math.max(-sectionTop + stickyTop, 0),
-        scrollDistance,
-      );
-      track.style.transform = `translate3d(${-scrolled}px, 0, 0)`;
+      revealCards();
     };
 
     const onScroll = () => {
@@ -93,20 +119,21 @@ export function WhyUsSection({ items }: WhyUsSectionProps) {
     >
       <div ref={stickyRef} className={styles.sticky}>
         <div className={styles.inner}>
-          <header className={styles.head}>
+          <Reveal as="header" className={styles.head} distance="lg">
             <p className={styles.label}>{whyUsIntro.label}</p>
             <h2 className={styles.title}>
               {whyUsIntro.titleBefore}
               <span className="textAccent">{whyUsIntro.titleAccent}</span>
             </h2>
-          </header>
+          </Reveal>
 
-          <div
-            className={styles.viewport}
-            role="region"
-            aria-label="Преимущества"
-          >
-            <div ref={trackRef} className={styles.track}>
+          <div className={styles.viewport}>
+            <div
+              ref={trackRef}
+              className={styles.track}
+              role="region"
+              aria-label="Преимущества"
+            >
               {items.map((item) => (
                 <article key={item.id} className={styles.card}>
                   <div className={styles.cardBody}>

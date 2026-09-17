@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Carousel } from "@/components/Carousel";
 import { PortfolioCard } from "@/components/PortfolioCard";
+import { Reveal } from "@/components/Reveal";
 import { projectsSection } from "@/data/home";
 import { projects } from "@/data/projects";
 import styles from "./ProjectsSection.module.css";
@@ -9,7 +10,7 @@ export function ProjectsSection() {
   return (
     <section id="projects" className={styles.section}>
       <div className={styles.inner}>
-        <header className={styles.head}>
+        <Reveal as="header" className={styles.head} distance="lg">
           <p className={styles.label}>{projectsSection.label}</p>
           <h2 className={styles.title}>
             <span>{projectsSection.titleLine}</span>
@@ -17,19 +18,21 @@ export function ProjectsSection() {
               {projectsSection.titleAccent}
             </span>
           </h2>
-        </header>
+        </Reveal>
 
-        <Carousel ariaLabel="Наши проекты">
-          {projects.map((project) => (
-            <PortfolioCard key={project.slug} project={project} />
-          ))}
-        </Carousel>
+        <Reveal>
+          <Carousel ariaLabel="Наши проекты">
+            {projects.map((project) => (
+              <PortfolioCard key={project.slug} project={project} />
+            ))}
+          </Carousel>
+        </Reveal>
 
-        <div className={styles.ctaRow}>
+        <Reveal className={styles.ctaRow} delay={80}>
           <Link href="/projects" className={`button buttonGhost ${styles.cta}`}>
             {projectsSection.cta} <span aria-hidden="true">→</span>
           </Link>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

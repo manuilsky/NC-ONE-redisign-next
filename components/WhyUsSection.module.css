@@ -77,10 +77,20 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: var(--shadow-glass);
+  opacity: 0;
+  transform: translate3d(0, 1.1rem, 0);
+  transition:
+    opacity 1.15s cubic-bezier(0.22, 1, 0.36, 1) var(--card-reveal-delay, 0ms),
+    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1) var(--card-reveal-delay, 0ms);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.cardVisible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
 .cardBody {
@@ -206,5 +216,12 @@
 
   .track {
     transform: none !important;
+  }
+
+  .card,
+  .cardVisible {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

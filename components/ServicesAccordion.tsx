@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ServiceItem } from "@/data/home";
+import { Reveal } from "@/components/Reveal";
 import styles from "./ServicesAccordion.module.css";
 
 type ServicesAccordionProps = {
@@ -66,15 +67,18 @@ export function ServicesAccordion({ items }: ServicesAccordionProps) {
 
   return (
     <div className={styles.list}>
-      {items.map((item) => {
+          {items.map((item, index) => {
         const open = openIds.has(item.id);
         const panelId = `service-panel-${item.id}`;
         const headerId = `service-header-${item.id}`;
 
         return (
-          <article
+          <Reveal
+            as="article"
             key={item.id}
             className={open ? `${styles.item} ${styles.itemOpen}` : styles.item}
+            delay={index * 50}
+            distance="sm"
           >
             <h3 className={styles.heading}>
               <button
@@ -112,7 +116,7 @@ export function ServicesAccordion({ items }: ServicesAccordionProps) {
                 ))}
               </div>
             </div>
-          </article>
+          </Reveal>
         );
       })}
     </div>

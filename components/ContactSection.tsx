@@ -1,4 +1,5 @@
 import { ContactForm } from "@/components/ContactForm";
+import { Reveal } from "@/components/Reveal";
 import { finalCta } from "@/data/home";
 import styles from "./ContactSection.module.css";
 
@@ -6,8 +7,10 @@ export function ContactSection() {
   return (
     <section id="contact" className={styles.section}>
       <div className={styles.inner}>
-        <p className={styles.label}>{finalCta.label}</p>
-        <h2 className={styles.title}>
+        <Reveal as="p" className={styles.label}>
+          {finalCta.label}
+        </Reveal>
+        <Reveal as="h2" className={styles.title} distance="lg" delay={80}>
           {finalCta.titleLines.map((line, i) => (
             <span
               key={line}
@@ -18,11 +21,13 @@ export function ContactSection() {
               {line}
             </span>
           ))}
-        </h2>
-        <p className={styles.lead}>{finalCta.text}</p>
+        </Reveal>
+        <Reveal as="p" className={styles.lead} delay={140}>
+          {finalCta.text}
+        </Reveal>
 
         <div className={styles.grid}>
-          <div className={styles.contacts}>
+          <Reveal as="div" className={styles.contacts} delay={80}>
             <a href={finalCta.phoneHref} className={styles.phone}>
               {finalCta.phone}
             </a>
@@ -44,8 +49,10 @@ export function ContactSection() {
               />
               {finalCta.telegramLabel}
             </a>
-          </div>
-          <ContactForm />
+          </Reveal>
+          <Reveal delay={160}>
+            <ContactForm />
+          </Reveal>
         </div>
       </div>
     </section>

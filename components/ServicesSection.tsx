@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "@/components/Reveal";
 import { ServicesAccordion } from "@/components/ServicesAccordion";
 import {
   partnerCta,
@@ -12,17 +13,19 @@ export function ServicesSection() {
   return (
     <section id="services" className={styles.section}>
       <div className={styles.inner}>
-        <header className={styles.head}>
+        <Reveal as="header" className={styles.head} distance="lg">
           <p className={styles.label}>{servicesIntro.label}</p>
           <h2 className={styles.title}>{servicesIntro.title}</h2>
           <p className={styles.lead}>{servicesIntro.lead}</p>
-        </header>
+        </Reveal>
 
         <ServicesAccordion items={services} />
 
-        <p className={styles.more}>{servicesMore}</p>
+        <Reveal as="p" className={styles.more} distance="sm">
+          {servicesMore}
+        </Reveal>
 
-        <div className={styles.partnerCard}>
+        <Reveal as="div" className={styles.partnerCard} distance="lg">
           <p className={styles.partnerLabel}>{partnerCta.label}</p>
           <h2 className={styles.partnerTitle}>
             <span className={styles.partnerTitleLine}>
@@ -43,7 +46,7 @@ export function ServicesSection() {
           <Link href="/#contact" className={`button ${styles.partnerCta}`}>
             {partnerCta.cta} <span aria-hidden="true">→</span>
           </Link>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

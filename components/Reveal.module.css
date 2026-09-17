@@ -1,0 +1,41 @@
+.reveal {
+  --reveal-delay: 0ms;
+  --reveal-y: 2.75rem;
+  --reveal-duration: 0.9s;
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-y), 0);
+  transition:
+    opacity var(--reveal-duration) cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay),
+    transform var(--reveal-duration) cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay);
+  will-change: opacity, transform;
+}
+
+.sm {
+  --reveal-y: 1.75rem;
+  --reveal-duration: 0.75s;
+}
+
+.md {
+  --reveal-y: 2.75rem;
+  --reveal-duration: 0.9s;
+}
+
+.lg {
+  --reveal-y: 3.75rem;
+  --reveal-duration: 1.05s;
+}
+
+.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
