@@ -17,9 +17,10 @@
 }
 
 .title {
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: 1.35rem;
   font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   text-transform: uppercase;
   letter-spacing: -0.01em;
 }

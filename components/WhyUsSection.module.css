@@ -40,9 +40,10 @@
 
 .title {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: clamp(2.5rem, 5.5vw, 4rem);
   font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   line-height: 1.05;
   letter-spacing: -0.01em;
   text-transform: uppercase;
@@ -103,17 +104,19 @@
 .cardNumber {
   margin: 0;
   color: var(--muted);
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: 0.75rem;
   font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   line-height: 1.4;
 }
 
 .cardTitle {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   line-height: 1.05;
   letter-spacing: -0.01em;
   color: var(--text);
@@ -149,9 +152,10 @@
 
 .footerHighlight {
   color: var(--text);
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: 0.75rem;
   font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   line-height: 1.5;

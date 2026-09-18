@@ -32,7 +32,7 @@
   --glow: 0 8px 30px rgba(110, 139, 255, 0.25);
   --font-display: "Benzin", sans-serif;
   --font-display-medium: "Benzin-Medium", "Benzin", sans-serif;
-  --font-weight-heading: 500;
+  --font-weight-heading: 400;
   --font-weight-stat: 600;
   --font-weight-display-bold: 700;
 }
@@ -179,9 +179,10 @@ button {
 }
 
 .sectionTitle {
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: clamp(1.8rem, 4.5vw, 3.4rem);
   font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   line-height: 1.05;
   letter-spacing: -0.02em;
   text-transform: uppercase;

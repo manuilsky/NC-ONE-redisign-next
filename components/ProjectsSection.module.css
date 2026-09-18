@@ -33,9 +33,10 @@
   display: flex;
   flex-direction: column;
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: 4rem;
   font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   line-height: 1.05;
   letter-spacing: -0.01em;
   text-transform: uppercase;

@@ -31,9 +31,10 @@
 
 .title {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: clamp(2.25rem, 5vw, 4rem);
   font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   line-height: 1.05;
   letter-spacing: -0.01em;
   text-transform: uppercase;
@@ -98,9 +99,10 @@
   margin: 0;
   width: 47.5rem;
   max-width: 100%;
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: 2.75rem;
   font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   line-height: 1.15;
   letter-spacing: 0;
   text-transform: uppercase;

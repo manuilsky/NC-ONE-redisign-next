@@ -5,6 +5,9 @@
 
 .title {
   margin-bottom: 0.75rem;
+  font-family: var(--font-display-medium);
+  font-weight: var(--font-weight-heading);
+  font-synthesis: none;
 }
 
 .text {

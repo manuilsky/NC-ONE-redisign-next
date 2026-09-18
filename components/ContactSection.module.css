@@ -31,9 +31,10 @@
   align-items: center;
   gap: 0.125rem;
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: 5rem;
   font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   line-height: 1.05;
   letter-spacing: -0.02em;
   text-transform: uppercase;
@@ -83,9 +84,10 @@
   display: inline-block;
   width: max-content;
   max-width: 100%;
-  font-family: var(--font-display);
+  font-family: var(--font-display-medium);
   font-size: 2rem;
   font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   line-height: 1.375;
   letter-spacing: 0;
   background-image: var(--btn-gradient);
