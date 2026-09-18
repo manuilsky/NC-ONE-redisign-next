@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { StarfieldTunnel } from "@/components/StarfieldTunnel";
 import { requisites } from "@/data/requisites";
 import styles from "./page.module.css";
 
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export default function RequisitesPage() {
   return (
     <section className={styles.page}>
+      <StarfieldTunnel />
       <div className={styles.hero}>
         <div className={styles.inner}>
           <Link href={requisites.backHref} className={styles.back}>

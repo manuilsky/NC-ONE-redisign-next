@@ -1,6 +1,12 @@
 .page {
   position: relative;
-  background: var(--bg);
+  background: transparent;
+}
+
+.hero,
+.body {
+  position: relative;
+  z-index: 1;
 }
 
 .hero {
@@ -102,8 +108,9 @@
   gap: 1rem;
   padding: 2.5rem;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.078);
-  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(8, 10, 24, 0.62);
+  backdrop-filter: blur(16px);
 }
 
 .cardTitle {
