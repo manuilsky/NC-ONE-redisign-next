@@ -52,9 +52,7 @@ function IconMinus() {
 }
 
 export function ServicesAccordion({ items }: ServicesAccordionProps) {
-  const [openIds, setOpenIds] = useState<Set<string>>(
-    () => new Set(items.slice(0, 2).map((item) => item.id)),
-  );
+  const [openIds, setOpenIds] = useState<Set<string>>(() => new Set());
 
   const toggle = (id: string) => {
     setOpenIds((prev) => {
@@ -76,7 +74,7 @@ export function ServicesAccordion({ items }: ServicesAccordionProps) {
           <Reveal
             as="article"
             key={item.id}
-            className={open ? `${styles.item} ${styles.itemOpen}` : styles.item}
+            className={styles.item}
             delay={index * 50}
             distance="sm"
           >

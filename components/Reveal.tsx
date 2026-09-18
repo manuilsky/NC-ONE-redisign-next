@@ -3,6 +3,7 @@
 import {
   useEffect,
   useRef,
+  useState,
   type CSSProperties,
   type ElementType,
   type ReactNode,
@@ -29,19 +30,14 @@ export function Reveal({
   style,
 }: RevealProps) {
   const ref = useRef<HTMLElement | null>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || visible) return;
 
     const show = () => {
-      el.classList.add(styles.visible);
-      const done = (event: TransitionEvent) => {
-        if (event.propertyName !== "transform") return;
-        el.style.willChange = "auto";
-        el.removeEventListener("transitionend", done);
-      };
-      el.addEventListener("transitionend", done);
+      setVisible(true);
     };
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -68,12 +64,25 @@ export function Reveal({
     return () => {
       io.disconnect();
     };
-  }, [rootMargin]);
+  }, [rootMargin, visible]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !visible) return;
+
+    const done = (event: TransitionEvent) => {
+      if (event.propertyName !== "transform") return;
+      el.style.willChange = "auto";
+    };
+
+    el.addEventListener("transitionend", done);
+    return () => el.removeEventListener("transitionend", done);
+  }, [visible]);
 
   return (
     <Tag
       ref={ref}
-      className={[styles.reveal, styles[distance], className]
+      className={[styles.reveal, styles[distance], visible && styles.visible, className]
         .filter(Boolean)
         .join(" ")}
       style={
