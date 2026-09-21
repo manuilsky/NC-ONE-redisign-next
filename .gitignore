@@ -40,3 +40,6 @@ next-env.d.ts
 /figma-console-mcp
 
 .tmp-video-frames/
+
+# Master scroll-bg source (~300MB). The site uses complete_scrub.web.mp4.
+/public/video/complete_scrub.mp4
