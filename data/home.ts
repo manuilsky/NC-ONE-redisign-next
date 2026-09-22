@@ -260,7 +260,9 @@ export const finalCta = {
     email: "email@mail.com",
     phone: "+0 000 000 0000",
     comment: "Комментарий",
-    consent: "Я даю согласие на обработку персональных данных",
+    consentBefore: "Я даю согласие на ",
+    consentLink: "обработку персональных данных",
+    consentHref: "/consent",
     submit: "Отправить заявку",
   },
 };

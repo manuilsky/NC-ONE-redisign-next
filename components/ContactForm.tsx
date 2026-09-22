@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { finalCta } from "@/data/home";
 import styles from "./ContactSection.module.css";
 
@@ -45,7 +46,18 @@ export function ContactForm() {
           type="checkbox"
           name="consent"
         />
-        <span>{finalCta.form.consent}</span>
+        <span>
+          {finalCta.form.consentBefore}
+          <Link
+            href={finalCta.form.consentHref}
+            className={styles.consentLink}
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          >
+            {finalCta.form.consentLink}
+          </Link>
+        </span>
       </label>
       <button type="submit" className={`button ${styles.submit}`}>
         {finalCta.form.submit} <span aria-hidden="true">→</span>

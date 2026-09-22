@@ -180,6 +180,23 @@
   cursor: pointer;
 }
 
+.consentLink {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  transition: color 0.2s ease;
+}
+
+.consentLink:hover,
+.consentLink:focus-visible {
+  color: var(--text);
+}
+
+.consentLink:focus-visible {
+  outline: 1px solid rgba(110, 139, 255, 0.7);
+  outline-offset: 2px;
+}
+
 .checkbox {
   -webkit-appearance: none;
   appearance: none;
