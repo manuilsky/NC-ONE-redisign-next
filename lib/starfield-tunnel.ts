@@ -8,6 +8,13 @@ const CONFIG = {
   colorA: "#aef6cf",
   colorB: "#5fe6a0",
   colorC: "#eafff2",
+  /** End palette at full scroll — deep violet (from reference scroll). */
+  bgColorEnd: "#1e0b2d",
+  flameColorEnd: "#d4a5ff",
+  flameColor2End: "#9b4dff",
+  colorAEnd: "#e8c4ff",
+  colorBEnd: "#b06dff",
+  colorCEnd: "#f3e6ff",
   opacity: 2,
   pointSize: 50,
   brightness: 1.85,
@@ -32,6 +39,25 @@ function hexToVec3(hex: string) {
     ((n >> 8) & 255) / 255,
     (n & 255) / 255,
   );
+}
+
+function lerpVec3(
+  out: THREE.Vector3,
+  a: THREE.Vector3,
+  b: THREE.Vector3,
+  t: number,
+) {
+  out.set(
+    a.x + (b.x - a.x) * t,
+    a.y + (b.y - a.y) * t,
+    a.z + (b.z - a.z) * t,
+  );
+}
+
+/** Ease so violet tones appear mid-scroll, matching the reference. */
+function scrollColorT(scroll: number) {
+  const x = Math.min(1, Math.max(0, scroll));
+  return x * x * (3 - 2 * x);
 }
 
 const VERTEX_SHADER = `
@@ -291,10 +317,73 @@ export function initStarfieldTunnel(
   window.addEventListener("scroll", updateScrollTarget, { passive: true });
   updateScrollTarget();
 
+  const paletteStart = {
+    bg: hexToVec3(CONFIG.bgColor),
+    flameA: hexToVec3(CONFIG.flameColor),
+    flameB: hexToVec3(CONFIG.flameColor2),
+    colorA: hexToVec3(CONFIG.colorA),
+    colorB: hexToVec3(CONFIG.colorB),
+    colorC: hexToVec3(CONFIG.colorC),
+  };
+  const paletteEnd = {
+    bg: hexToVec3(CONFIG.bgColorEnd),
+    flameA: hexToVec3(CONFIG.flameColorEnd),
+    flameB: hexToVec3(CONFIG.flameColor2End),
+    colorA: hexToVec3(CONFIG.colorAEnd),
+    colorB: hexToVec3(CONFIG.colorBEnd),
+    colorC: hexToVec3(CONFIG.colorCEnd),
+  };
+
   const mouseSmooth = { x: 0, y: 0 };
   const reduceMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
+
+  function applyScrollPalette(scroll: number) {
+    const t = scrollColorT(scroll);
+    lerpVec3(
+      finalMaterial.uniforms.uBg.value,
+      paletteStart.bg,
+      paletteEnd.bg,
+      t,
+    );
+    lerpVec3(
+      finalMaterial.uniforms.uFlameA.value,
+      paletteStart.flameA,
+      paletteEnd.flameA,
+      t,
+    );
+    lerpVec3(
+      finalMaterial.uniforms.uFlameB.value,
+      paletteStart.flameB,
+      paletteEnd.flameB,
+      t,
+    );
+    lerpVec3(
+      material.uniforms.uColorA.value,
+      paletteStart.colorA,
+      paletteEnd.colorA,
+      t,
+    );
+    lerpVec3(
+      material.uniforms.uColorB.value,
+      paletteStart.colorB,
+      paletteEnd.colorB,
+      t,
+    );
+    lerpVec3(
+      material.uniforms.uColorC.value,
+      paletteStart.colorC,
+      paletteEnd.colorC,
+      t,
+    );
+    finalMaterial.uniforms.uFlameAmt.value = CONFIG.flameAmt + t * 0.14;
+    const bg = finalMaterial.uniforms.uBg.value;
+    canvas.parentElement?.style.setProperty(
+      "--starfield-bg",
+      `rgb(${Math.round(bg.x * 255)} ${Math.round(bg.y * 255)} ${Math.round(bg.z * 255)})`,
+    );
+  }
 
   function resizeTargets() {
     const pr = Math.min(2, window.devicePixelRatio || 1);
@@ -350,9 +439,11 @@ export function initStarfieldTunnel(
         -10,
       );
       group.rotation.z += dt * (CONFIG.spin + scrollCurrent * CONFIG.scrollSpin);
+      applyScrollPalette(scrollCurrent);
       finalMaterial.uniforms.iTime.value = t;
     } else {
       material.uniforms.uOpacity.value = CONFIG.opacity;
+      applyScrollPalette(scrollTarget);
     }
 
     renderer.setRenderTarget(sceneTarget);
