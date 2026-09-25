@@ -248,12 +248,12 @@ export const projectsSection = {
 export const finalCta = {
   label: "[ свяжитесь с нами ]",
   titleLines: ["Готовы", "запустить", "ваш проект?"] as const,
-  accentLineIndex: 1,
+  accentLineIndexes: [0, 1] as const,
   text: "Расскажите о задаче — составим уникальное предложение и подберём оптимальный бюджет.",
   phone: "+7 916 945 7964",
   phoneHref: "tel:+79169457964",
   email: "info@ncomsoft.ru",
-  telegramLabel: "Telegram  @Ncomsoft1",
+  telegramLabel: "Telegram",
   telegramHref: "https://t.me/Ncomsoft1",
   form: {
     name: "Имя",

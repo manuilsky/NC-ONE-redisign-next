@@ -131,18 +131,37 @@
   white-space: nowrap;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .header {
     column-gap: 0.75rem;
-    padding: 1.35rem 0;
+    padding: 1.25rem 0;
   }
 
-  .panel {
-    padding-left: 0;
-    padding-bottom: 1.5rem;
+  .number {
+    font-size: 0.875rem;
   }
 
   .title {
     font-size: 1rem;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .panel {
+    gap: 1.25rem;
+    padding-left: 0;
+    padding-bottom: 2rem;
+  }
+
+  .description {
+    max-width: none;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-align: justify;
+  }
+
+  .chip {
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
   }
 }

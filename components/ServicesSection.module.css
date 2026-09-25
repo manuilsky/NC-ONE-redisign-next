@@ -158,25 +158,53 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .section {
     padding: 4rem 0;
   }
 
   .inner {
-    width: min(100% - 1.5rem, var(--container));
-    gap: 2rem;
+    width: min(100% - 2rem, var(--container));
+    gap: 3rem;
+  }
+
+  .head {
+    gap: 1rem;
   }
 
   .title {
-    font-size: clamp(1.85rem, 9vw, 2.5rem);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    max-width: none;
+  }
+
+  .lead {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    text-align: justify;
+    max-width: none;
+  }
+
+  .more {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-align: justify;
   }
 
   .partnerCard {
+    gap: 1.5rem;
     padding: 3rem 1.5rem;
+    border-radius: 2rem;
   }
 
   .partnerTitle {
     font-size: 1.125rem;
+    line-height: 1.15;
+  }
+
+  .partnerText {
+    font-size: 1rem;
+    line-height: 1.7;
   }
 }

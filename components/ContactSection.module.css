@@ -244,24 +244,55 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .section {
     padding: 4rem 0;
   }
 
   .inner {
-    width: min(100% - 1.5rem, var(--container));
+    width: min(100% - 2rem, var(--container));
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .label {
+    text-align: left;
   }
 
   .title {
-    font-size: 2rem;
+    align-self: center;
+    font-size: 1.875rem;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
   }
 
   .lead {
-    font-size: 1.05rem;
+    max-width: none;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .grid {
+    gap: 1.5rem;
+  }
+
+  .contacts {
+    gap: 1rem;
   }
 
   .phone {
-    font-size: 1.5rem;
+    font-size: 2rem;
+    line-height: 1.1;
+  }
+
+  .email {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .form {
+    padding: 2rem;
+    gap: 1rem;
   }
 }

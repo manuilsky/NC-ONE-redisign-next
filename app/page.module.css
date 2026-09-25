@@ -20,6 +20,7 @@
   justify-items: center;
   gap: 0.125rem;
   margin: 0;
+  width: 100%;
   font-family: var(--font-display-medium);
   font-size: clamp(2.75rem, 5.55vw, 5rem);
   font-weight: var(--font-weight-heading);
@@ -52,21 +53,6 @@
   font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-@media (max-width: 720px) {
-  .hero {
-    padding: 5rem 0 3.5rem;
-  }
-
-  .heroInner {
-    width: min(100% - 1.5rem, var(--container));
-    gap: 1.5rem;
-  }
-
-  .heroLead {
-    font-size: 1.05rem;
-  }
 }
 
 .about {
@@ -140,9 +126,10 @@
 
 .statValue {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-display-semibold);
   font-size: 2rem;
-  font-weight: var(--font-weight-stat);
+  font-weight: var(--font-weight-heading);
+  font-synthesis: none;
   line-height: 1;
   color: var(--text);
 }
@@ -198,17 +185,79 @@
   }
 }
 
-@media (max-width: 560px) {
-  .statsGrid {
-    grid-template-columns: 1fr;
+/* Mobile: 375–768 — Figma Mobile (375) */
+@media (max-width: 768px) {
+  .hero {
+    padding: 6rem 0 4rem;
+    min-height: auto;
   }
 
-  .statCard {
-    min-height: 8.5rem;
-    width: 100%;
+  .heroInner {
+    width: min(100% - 2rem, var(--container));
+    gap: 2rem;
+  }
+
+  .heroTitle {
+    font-size: 2rem;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .heroLead {
+    max-width: 100%;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .scrollHint {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  .about {
+    padding: 4rem 0;
+  }
+
+  .aboutGrid {
+    gap: 2.5rem;
+  }
+
+  .aboutTextCol {
+    max-width: none;
+    gap: 1.5rem;
   }
 
   .aboutText {
-    text-align: left;
+    font-size: 1rem;
+    line-height: 1.7;
+    text-align: justify;
+  }
+
+  .statsGrid {
+    width: 100%;
+    max-width: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .statCard {
+    width: auto;
+    height: auto;
+    min-height: 0;
+    padding: 2rem 1.5rem;
+    gap: 0.5rem;
+  }
+
+  .statValue {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .statLabel,
+  .statLabelCompact {
+    font-size: 0.625rem;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    text-transform: uppercase;
   }
 }

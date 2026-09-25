@@ -57,18 +57,111 @@
   white-space: nowrap;
 }
 
-@media (max-width: 900px) {
-  .inner {
-    grid-template-columns: 1fr auto;
-    min-height: var(--header-h);
-    padding-block: 0;
+.menuButton {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.menuButton:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.menuIcon {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.mobileMenu {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .header {
+    background: rgba(5, 6, 10, 0.92);
   }
 
-  .nav {
+  .inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 4rem;
+    height: 4rem;
+    padding-block: 0;
+    gap: 0.75rem;
+  }
+
+  .logo {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .nav,
+  .cta {
     display: none;
   }
 
+  .menuButton {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
   .logoImage {
-    height: 2.25rem;
+    width: auto;
+    height: 2rem;
+    max-width: 100%;
+  }
+
+  .mobileMenu {
+    display: none;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.25rem 1rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(5, 6, 10, 0.98);
+  }
+
+  .mobileMenuOpen {
+    display: flex;
+  }
+
+  .mobileNav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mobileNavLink {
+    display: block;
+    padding: 0.75rem 0;
+    color: var(--muted);
+    font-family: var(--font-body), "Segoe UI", sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    transition: color 0.2s ease;
+  }
+
+  .mobileNavLink:hover {
+    color: var(--text);
+  }
+
+  .mobileCta {
+    align-self: flex-start;
+    min-height: 3.0625rem;
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
   }
 }

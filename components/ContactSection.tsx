@@ -15,7 +15,9 @@ export function ContactSection() {
             <span
               key={line}
               className={
-                i === finalCta.accentLineIndex ? styles.titleAccent : undefined
+                (finalCta.accentLineIndexes as readonly number[]).includes(i)
+                  ? styles.titleAccent
+                  : undefined
               }
             >
               {line}

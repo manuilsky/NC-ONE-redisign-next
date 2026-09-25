@@ -73,8 +73,20 @@
   background: var(--accent);
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
+  .root {
+    gap: 3rem;
+  }
+
+  .track {
+    gap: 0;
+  }
+
   .slide {
     flex-basis: 100%;
+  }
+
+  .controls {
+    gap: 1.25rem;
   }
 }
