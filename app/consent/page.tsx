@@ -24,7 +24,8 @@ export default function ConsentPage() {
             className={styles.title}
             aria-label="Согласие на обработку персональных данных"
           >
-            <span className={styles.titleWord}>{consent.title}</span>{" "}
+            <span className={styles.titleWord}>{consent.title}</span>
+            {"\u00A0"}
             <span className={styles.titleAccent}>{consent.titleAccent}</span>
           </h1>
           <p className={styles.related}>
