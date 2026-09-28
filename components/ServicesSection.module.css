@@ -198,6 +198,11 @@
     border-radius: 2rem;
   }
 
+  .partnerLabel {
+    align-self: stretch;
+    text-align: left;
+  }
+
   .partnerTitle {
     font-size: 1.125rem;
     line-height: 1.15;

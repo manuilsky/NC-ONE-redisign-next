@@ -31,7 +31,9 @@ export function ContactSection() {
         <div className={styles.grid}>
           <Reveal as="div" className={styles.contacts} delay={80}>
             <a href={finalCta.phoneHref} className={styles.phone}>
-              {finalCta.phone}
+              <span>+7 916 945</span>
+              <span className={styles.phoneSpace}> </span>
+              <span>7964</span>
             </a>
             <a href={`mailto:${finalCta.email}`} className={styles.email}>
               {finalCta.email}
