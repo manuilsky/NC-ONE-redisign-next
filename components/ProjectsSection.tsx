@@ -1,10 +1,30 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import { Carousel } from "@/components/Carousel";
 import { PortfolioCard } from "@/components/PortfolioCard";
 import { Reveal } from "@/components/Reveal";
 import { projectsSection } from "@/data/home";
 import { projects } from "@/data/projects";
 import styles from "./ProjectsSection.module.css";
+
+function TitlePart({
+  chunks,
+  className,
+}: {
+  chunks: readonly string[];
+  className?: string;
+}) {
+  return (
+    <span className={className}>
+      {chunks.map((chunk, i) => (
+        <Fragment key={chunk}>
+          {i > 0 ? <span className={styles.titleSpace}> </span> : null}
+          <span>{chunk}</span>
+        </Fragment>
+      ))}
+    </span>
+  );
+}
 
 export function ProjectsSection() {
   return (
@@ -13,10 +33,14 @@ export function ProjectsSection() {
         <Reveal as="header" className={styles.head} distance="lg">
           <p className={styles.label}>{projectsSection.label}</p>
           <h2 className={styles.title}>
-            <span>{projectsSection.titleLine}</span>
-            <span className={`textAccent ${styles.titleAccent}`}>
-              {projectsSection.titleAccent}
-            </span>
+            <TitlePart
+              chunks={projectsSection.titleChunks}
+              className={styles.titlePlain}
+            />
+            <TitlePart
+              chunks={projectsSection.titleAccentChunks}
+              className={`textAccent ${styles.titleAccent}`}
+            />
           </h2>
         </Reveal>
 
