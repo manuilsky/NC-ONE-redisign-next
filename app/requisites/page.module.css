@@ -106,7 +106,9 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-width: 0;
   padding: 2.5rem;
+  overflow: hidden;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(255, 255, 255, 0.078);
   background: rgba(255, 255, 255, 0.035);
@@ -137,6 +139,8 @@
   font-size: 0.9375rem;
   font-weight: 400;
   line-height: 1.7;
+  text-align: justify;
+  overflow-wrap: anywhere;
 }
 
 .item::before {
@@ -193,26 +197,48 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .hero {
-    padding: 5rem 0 2rem;
+    padding: clamp(5rem, calc(5rem + (100vw - 375px) * 8 / 393), 5.5rem) 0
+      2rem;
+  }
+
+  .body {
+    padding: 0 0 4rem;
   }
 
   .inner {
-    width: min(100% - 2rem, var(--container));
+    width: min(
+      calc(100% - (2rem + (100vw - 375px) * 16 / 393)),
+      var(--container)
+    );
+  }
+
+  .hero .inner {
+    gap: 1rem;
   }
 
   .title {
-    font-size: 1.625rem;
+    font-size: clamp(
+      1.625rem,
+      calc(1.625rem + (100vw - 375px) * 14 / 393),
+      2.5rem
+    );
     line-height: 1.05;
     letter-spacing: -0.01em;
   }
 
-  .titleAccent {
-    display: block;
+  .blocks {
+    gap: 1rem;
   }
 
   .card {
-    padding: 2rem 1.25rem;
+    padding: 2rem
+      clamp(1.25rem, calc(1.25rem + (100vw - 375px) * 12 / 393), 2rem);
+  }
+
+  .cardTitle {
+    font-size: 1.125rem;
+    line-height: 1.2;
   }
 }
