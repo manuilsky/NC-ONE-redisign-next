@@ -15,16 +15,19 @@ export function WhyUsSection({ items }: WhyUsSectionProps) {
   const stickyRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [scrollDistance, setScrollDistance] = useState(0);
+  const [stickyHeight, setStickyHeight] = useState(0);
 
   useEffect(() => {
     const track = trackRef.current;
-    if (!track) return;
+    const sticky = stickyRef.current;
+    if (!track || !sticky) return;
 
     const measure = () => {
       const parent = track.parentElement;
       if (!parent) return;
       const distance = Math.max(0, track.scrollWidth - parent.clientWidth);
       setScrollDistance(distance);
+      setStickyHeight(sticky.offsetHeight);
       if (distance <= 0) {
         track.style.transform = "translate3d(0,0,0)";
       }
@@ -33,6 +36,7 @@ export function WhyUsSection({ items }: WhyUsSectionProps) {
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(track);
+    ro.observe(sticky);
     if (track.parentElement) ro.observe(track.parentElement);
     window.addEventListener("resize", measure);
     return () => {
@@ -110,10 +114,8 @@ export function WhyUsSection({ items }: WhyUsSectionProps) {
       id="why-us"
       className={styles.section}
       style={
-        scrollDistance > 0
-          ? {
-              height: `calc(100vh - var(--header-h) + ${scrollDistance}px)`,
-            }
+        scrollDistance > 0 && stickyHeight > 0
+          ? { height: `${stickyHeight + scrollDistance}px` }
           : undefined
       }
     >

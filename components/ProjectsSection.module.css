@@ -60,25 +60,32 @@
   -webkit-backdrop-filter: blur(20px);
 }
 
-@media (max-width: 960px) {
-  .title {
-    font-size: clamp(2rem, 8vw, 3rem);
-  }
-}
-
-/* Mobile (375): НАШИ / ПРОЕКТЫ / ГОВОРЯТ ЗА / НАС */
-@media (max-width: 768px) {
+/* Tablet: 768–1200 — Figma Tablet (768) */
+@media (max-width: 1200px) {
   .section {
     padding: 4rem 0;
   }
 
   .inner {
-    width: min(100% - 2rem, var(--container));
+    width: min(100% - 3rem, var(--container));
     gap: 3rem;
   }
 
   .head {
     gap: 1rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+}
+
+/* Mobile (375): НАШИ / ПРОЕКТЫ / ГОВОРЯТ ЗА / НАС */
+@media (max-width: 767px) {
+  .inner {
+    width: min(100% - 2rem, var(--container));
   }
 
   .title {

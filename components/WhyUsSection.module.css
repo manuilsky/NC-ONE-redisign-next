@@ -5,10 +5,11 @@
 .sticky {
   position: sticky;
   top: var(--header-h);
-  height: calc(100vh - var(--header-h));
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  /* Figma Main / Advantages: padding 96 */
+  padding: 6rem 0;
   overflow: hidden;
 }
 
@@ -163,9 +164,48 @@
   text-align: right;
 }
 
-@media (max-width: 768px) {
+/* Tablet: 768–1200 — Figma Tablet (768) / Advantages: padding 64 */
+@media (max-width: 1200px) {
   .sticky {
-    justify-content: flex-start;
+    padding: 4rem 0;
+  }
+
+  .head {
+    width: min(100% - 3rem, var(--container));
+  }
+
+  .title {
+    font-size: 2.5rem;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+
+  .track {
+    gap: 1.5rem;
+    padding-inline: max(
+      1.5rem,
+      calc((100vw - min(100vw - 3rem, var(--container))) / 2)
+    );
+  }
+
+  .card {
+    flex-basis: 21.75rem;
+    width: 21.75rem;
+    height: 19.1875rem;
+    min-height: 19.1875rem;
+    padding: 1.5rem;
+  }
+
+  .cardTitle {
+    font-size: 1.125rem;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+}
+
+/* Mobile: 375–767 — Figma Mobile (375) / Advantages: padding 64 */
+@media (max-width: 767px) {
+  .sticky {
     padding: 4rem 0;
   }
 

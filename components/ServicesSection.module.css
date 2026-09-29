@@ -137,9 +137,43 @@
   margin-top: 0;
 }
 
-@media (max-width: 1199px) {
+/* Tablet: 768–1200 — Figma Tablet (768) */
+@media (max-width: 1200px) {
+  .section {
+    padding: 4rem 0;
+  }
+
+  .inner {
+    width: min(100% - 3rem, var(--container));
+    gap: 3rem;
+  }
+
+  .head {
+    gap: 1rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    max-width: none;
+  }
+
+  .lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: none;
+  }
+
+  .more {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-align: justify;
+  }
+
   .partnerCard {
     height: auto;
+    gap: 1.5rem;
     padding: 3.5rem 2.5rem;
   }
 
@@ -151,65 +185,39 @@
   .partnerTitle {
     width: 100%;
     font-size: 2.1875rem;
+    line-height: 1.15;
   }
 
   .partnerText {
     width: 100%;
+    font-size: 1rem;
+    line-height: 1.7;
   }
 }
 
-@media (max-width: 768px) {
-  .section {
-    padding: 4rem 0;
-  }
-
+/* Mobile: 375–767 — Figma Mobile (375) */
+@media (max-width: 767px) {
   .inner {
     width: min(100% - 2rem, var(--container));
-    gap: 3rem;
-  }
-
-  .head {
-    gap: 1rem;
   }
 
   .title {
     font-size: 1.5rem;
     line-height: 1.2;
-    letter-spacing: -0.01em;
-    max-width: none;
   }
 
   .lead {
     font-size: 0.9375rem;
-    line-height: 1.7;
-    text-align: justify;
-    max-width: none;
-  }
-
-  .more {
-    font-size: 0.875rem;
-    line-height: 1.5;
     text-align: justify;
   }
 
   .partnerCard {
-    gap: 1.5rem;
     padding: 3rem 1.5rem;
     border-radius: 2rem;
-  }
-
-  .partnerLabel {
-    align-self: stretch;
-    text-align: left;
   }
 
   .partnerTitle {
     font-size: 1.125rem;
     line-height: 1.15;
-  }
-
-  .partnerText {
-    font-size: 1rem;
-    line-height: 1.7;
   }
 }

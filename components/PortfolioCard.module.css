@@ -150,7 +150,8 @@
   white-space: nowrap;
 }
 
-@media (max-width: 768px) {
+/* Tablet: 768–1200 — Figma Tablet (768) */
+@media (max-width: 1200px) {
   .card {
     height: auto;
     min-height: 0;
@@ -161,25 +162,23 @@
     height: 25rem;
   }
 
-  .mark {
-    font-size: 6rem;
-  }
-
-  .info {
-    padding-top: 1rem;
-    gap: 1rem;
-  }
-
   .title {
     font-size: 1.5rem;
     line-height: 1.375;
   }
 
-  .desc {
-    font-size: 1rem;
-    line-height: 1.7;
+  .tags {
+    max-height: calc(1.9375rem * 2 + 0.5rem);
   }
 
+  .tagMore {
+    height: 1.9375rem;
+    padding: 0.4375rem 0.75rem;
+  }
+}
+
+/* Mobile: 375–767 — Figma Mobile (375) */
+@media (max-width: 767px) {
   .tags {
     max-height: calc(1.9375rem * 2 + 0.5rem);
   }

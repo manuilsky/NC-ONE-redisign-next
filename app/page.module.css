@@ -151,7 +151,34 @@
   line-height: 1.25;
 }
 
+/* Tablet: 768–1200 — Figma Tablet (768) */
 @media (max-width: 1200px) {
+  .hero {
+    padding: 6rem 0 4rem;
+    min-height: auto;
+  }
+
+  .heroInner {
+    width: min(100% - 3rem, var(--container));
+    gap: 2rem;
+  }
+
+  .heroTitle {
+    font-size: 3rem;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .heroLead {
+    max-width: none;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  .about {
+    padding: 4rem 0;
+  }
+
   .aboutGrid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
@@ -159,34 +186,39 @@
   }
 
   .aboutTextCol {
-    max-width: 36rem;
+    max-width: none;
+    gap: 1.5rem;
   }
 
   .statsGrid {
     width: 100%;
-    max-width: 45.25rem;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
   }
 
   .statCard {
     width: auto;
     height: auto;
-    min-height: 11.34375rem;
+    min-height: 7.5625rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .statValue {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .statLabel,
+  .statLabelCompact {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    line-height: 1.25;
   }
 }
 
-@media (max-width: 960px) {
-  .about {
-    padding: 4rem 0;
-  }
-
-  .statsGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* Mobile: 375–768 — Figma Mobile (375) */
-@media (max-width: 768px) {
+/* Mobile: 375–767 — Figma Mobile (375) */
+@media (max-width: 767px) {
   .hero {
     padding: 6rem 0 4rem;
     min-height: auto;

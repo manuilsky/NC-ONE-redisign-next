@@ -229,28 +229,14 @@
   width: 100%;
 }
 
-@media (max-width: 960px) {
-  .title {
-    font-size: clamp(2.25rem, 8vw, 4rem);
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-    width: 100%;
-  }
-
-  .form {
-    width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
+/* Tablet: 768–1200 — Figma Tablet (768) */
+@media (max-width: 1200px) {
   .section {
     padding: 4rem 0;
   }
 
   .inner {
-    width: min(100% - 2rem, var(--container));
+    width: min(100% - 3rem, var(--container));
     gap: 1.5rem;
     align-items: stretch;
   }
@@ -261,7 +247,7 @@
 
   .title {
     align-self: center;
-    font-size: 1.875rem;
+    font-size: 3.5rem;
     letter-spacing: -0.02em;
     line-height: 1.05;
   }
@@ -274,11 +260,43 @@
   }
 
   .grid {
+    grid-template-columns: 1fr;
+    width: 100%;
     gap: 1.5rem;
   }
 
-  .contacts {
-    gap: 1rem;
+  .form {
+    width: 100%;
+  }
+
+  .phone {
+    font-size: 2rem;
+    line-height: 1.375;
+  }
+
+  .email {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+}
+
+/* Mobile: 375–767 — Figma Mobile (375) */
+@media (max-width: 767px) {
+  .inner {
+    width: min(100% - 2rem, var(--container));
+  }
+
+  .label {
+    text-align: left;
+  }
+
+  .title {
+    align-self: center;
+    font-size: 1.875rem;
+  }
+
+  .lead {
+    text-align: center;
   }
 
   .phone {
@@ -287,21 +305,9 @@
     align-items: flex-start;
     width: 100%;
     max-width: 100%;
-    font-size: 2rem;
-    line-height: 1.375;
   }
 
   .phoneSpace {
     display: none;
-  }
-
-  .email {
-    font-size: 1.25rem;
-    line-height: 1.4;
-  }
-
-  .form {
-    padding: 2rem;
-    gap: 1rem;
   }
 }

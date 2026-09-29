@@ -131,7 +131,39 @@
   white-space: nowrap;
 }
 
-@media (max-width: 768px) {
+/* Tablet: 768–1200 — Figma Tablet (768) */
+@media (max-width: 1200px) {
+  .header {
+    column-gap: 1rem;
+    padding: 1.5rem 0;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .toggle,
+  .toggleOpen {
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-basis: 2.25rem;
+  }
+
+  .panel {
+    padding-left: 0;
+  }
+
+  .description {
+    max-width: none;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+}
+
+/* Mobile: 375–767 — Figma Mobile (375) */
+@media (max-width: 767px) {
   .header {
     column-gap: 0.75rem;
     padding: 1.25rem 0;
