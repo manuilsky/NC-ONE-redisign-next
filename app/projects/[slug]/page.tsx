@@ -14,6 +14,7 @@ import {
   IconTeam,
   IconType,
 } from "@/components/CaseIcons";
+import { StarfieldTunnel } from "@/components/StarfieldTunnel";
 import {
   caseCta,
   getProjectBySlug,
@@ -73,6 +74,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <article className={styles.page}>
+      <StarfieldTunnel />
       <section className={styles.hero}>
         <div className="container">
           <Link href="/projects" className={styles.back}>

@@ -1,5 +1,12 @@
 .page {
+  position: relative;
+  background: transparent;
   padding: 3.5rem 0 5rem;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
 }
 
 .header {

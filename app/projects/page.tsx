@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectCard } from "@/components/ProjectCard";
+import { StarfieldTunnel } from "@/components/StarfieldTunnel";
 import { projects } from "@/data/projects";
 import styles from "./page.module.css";
 
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
 export default function ProjectsPage() {
   return (
     <section className={styles.page}>
-      <div className="container">
+      <StarfieldTunnel />
+      <div className={`container ${styles.content}`}>
         <div className={styles.header}>
           <Link href="/" className={styles.back}>
             ← На главную
