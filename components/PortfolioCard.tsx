@@ -136,7 +136,7 @@ export function PortfolioCard({ project }: PortfolioCardProps) {
       <div className={styles.info}>
         <div className={styles.head}>
           <h3 className={styles.title}>{project.title}</h3>
-          <p className={styles.desc}>{project.shortDescription}</p>
+          <p className={styles.desc}>{project.desc}</p>
         </div>
         <PortfolioTags tags={project.tags} />
       </div>

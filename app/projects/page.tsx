@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ProjectCard } from "@/components/ProjectCard";
+import { ProjectsCatalog } from "@/components/ProjectsCatalog";
 import { StarfieldTunnel } from "@/components/StarfieldTunnel";
 import { projects } from "@/data/projects";
 import styles from "./page.module.css";
@@ -27,11 +27,7 @@ export default function ProjectsPage() {
             Кейсы и реализованные решения. Откройте карточку, чтобы узнать подробнее.
           </p>
         </div>
-        <div className={styles.grid}>
-          {projects.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
-          ))}
-        </div>
+        <ProjectsCatalog projects={projects} />
       </div>
     </section>
   );

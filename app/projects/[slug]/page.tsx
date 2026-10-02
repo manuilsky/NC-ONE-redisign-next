@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
 import {
   IconArrow,
   IconBack,
@@ -16,17 +17,26 @@ import {
 } from "@/components/CaseIcons";
 import { StarfieldTunnel } from "@/components/StarfieldTunnel";
 import {
-  caseCta,
+  caseCtaChips,
+  getCategoryLabel,
   getProjectBySlug,
   getProjectMark,
   getProjectPosition,
   projects,
+  type CaseFact,
   type Project,
 } from "@/data/projects";
 import styles from "./page.module.css";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
+};
+
+const factIcons: Record<CaseFact["icon"], ReactNode> = {
+  platform: <IconPlatform />,
+  team: <IconTeam />,
+  duration: <IconDuration />,
+  type: <IconType />,
 };
 
 export function generateStaticParams() {
@@ -44,13 +54,17 @@ export async function generateMetadata({
   }
 
   return {
-    title: project.title,
-    description: project.shortDescription,
+    title: project.seoTitle || project.title,
+    description: project.seoDescription || project.desc,
   };
 }
 
 function padIndex(value: number) {
   return String(value).padStart(2, "0");
+}
+
+function splitParagraphs(text: string) {
+  return text.split(/\n\n+/).filter(Boolean);
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
@@ -62,15 +76,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   const { index, total, next } = getProjectPosition(slug);
-  const study = project.caseStudy;
   const mark = getProjectMark(project);
   const nextMark = getProjectMark(next);
-  const facts = [
-    { icon: <IconPlatform />, label: "Платформа", value: study.platform },
-    { icon: <IconTeam />, label: "Команда", value: study.team },
-    { icon: <IconType />, label: "Тип проекта", value: study.projectType },
-    { icon: <IconDuration />, label: "Срок разработки", value: study.duration },
-  ];
+  const categoryLabel = getCategoryLabel(project.categories[0] ?? "all");
+  const ctaTitle = project.ctaTitle
+    ? project.ctaTitle
+    : project.type
+      ? `Нужна разработка ${project.type}?`
+      : "Готовы обсудить похожий проект?";
 
   return (
     <article className={styles.page}>
@@ -83,7 +96,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </Link>
 
           <div className={styles.eyebrow}>
-            <span className={styles.category}>{project.category}</span>
+            <span className={styles.category}>{categoryLabel}</span>
             <span className={styles.index}>
               {padIndex(index + 1)} / {padIndex(total)}
             </span>
@@ -91,14 +104,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
           <div className={styles.heroGrid}>
             <div className={styles.copy}>
-              <p className={styles.subtitle}>{study.subtitle}</p>
+              <p className={styles.subtitle}>{project.subtitle}</p>
               <h1 className={styles.title}>{project.title}</h1>
-              <p className={styles.lead}>{project.shortDescription}</p>
+              <p className={styles.lead}>{project.desc}</p>
 
               <dl className={styles.facts}>
-                {facts.map((fact) => (
+                {project.facts.map((fact) => (
                   <div key={fact.label} className={styles.fact}>
-                    <span className={styles.factIcon}>{fact.icon}</span>
+                    <span className={styles.factIcon}>{factIcons[fact.icon]}</span>
                     <div>
                       <dt>{fact.label}</dt>
                       <dd>{fact.value}</dd>
@@ -127,7 +140,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className={styles.stack}>
             <div className={styles.stackInfo}>
               <p className={styles.label}>[ стек ]</p>
-              <p className={styles.stackNote}>{study.stackNote}</p>
+              <p className={styles.stackNote}>{project.stackReason}</p>
             </div>
             <ul className={styles.tags}>
               {project.tags.map((tag) => (
@@ -145,14 +158,18 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <IconClient />
             </span>
             <h2>О клиенте</h2>
-            <p>{study.client}</p>
+            {splitParagraphs(project.clientInfo).map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </article>
           <article className={styles.introCard}>
             <span className={styles.introIcon}>
               <IconTask />
             </span>
             <h2>Задача</h2>
-            <p>{study.task}</p>
+            {splitParagraphs(project.problem).map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </article>
         </div>
       </section>
@@ -161,14 +178,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <div className="container">
           <p className={styles.label}>[ уникальность проекта ]</p>
           <ul className={styles.highlights}>
-            {study.highlights.map((item) => (
+            {project.highlights.map((item) => (
               <li key={item.title}>
                 <span className={styles.check}>
                   <IconCheck />
                 </span>
                 <div>
                   <h3>{item.title}</h3>
-                  <p>{item.text}</p>
+                  <p>{item.desc}</p>
                 </div>
               </li>
             ))}
@@ -181,7 +198,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <article className={styles.solutionCard}>
             <p className={styles.label}>[ решение ]</p>
             <ul className={styles.solutionList}>
-              {study.solution.map((item) => (
+              {project.solutionPoints.map((item) => (
                 <li key={item}>
                   <span className={`${styles.check} ${styles.checkSm}`}>
                     <IconCheck />
@@ -197,15 +214,21 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <IconSpark />
               [ результат ]
             </p>
-            <div className={styles.stats}>
-              {study.stats.map((stat) => (
-                <div key={stat.label}>
-                  <p className={styles.statValue}>{stat.value}</p>
-                  <p className={styles.statLabel}>{stat.label}</p>
-                </div>
-              ))}
-            </div>
-            <p className={styles.resultNote}>{study.resultNote}</p>
+            {project.results && project.results.length > 0 ? (
+              <div className={styles.stats}>
+                {project.results.map((stat) => (
+                  <div key={stat.label}>
+                    <p className={styles.statValue}>{stat.value}</p>
+                    <p className={styles.statLabel}>{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            {splitParagraphs(project.resultsSummary).map((paragraph) => (
+              <p key={paragraph} className={styles.resultNote}>
+                {paragraph}
+              </p>
+            ))}
           </article>
         </div>
       </section>
@@ -227,13 +250,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <div className="container">
           <div className={styles.cta}>
             <p className={styles.label}>[ следующий шаг ]</p>
-            <h2>
-              <span>Нужна разработка</span>
-              <span>{study.productType}?</span>
-            </h2>
-            <p className={styles.ctaText}>{caseCta.text}</p>
+            <h2>{ctaTitle}</h2>
+            <p className={styles.ctaText}>{project.ctaText}</p>
             <ul className={styles.chips}>
-              {caseCta.chips.map((chip) => (
+              {caseCtaChips.map((chip) => (
                 <li key={chip}>{chip}</li>
               ))}
             </ul>
