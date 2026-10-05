@@ -1,30 +1,42 @@
+"use client";
+
 import Link from "next/link";
+import { IconArrowUpRight } from "@/components/CaseIcons";
+import { ScrambleText } from "@/components/ScrambleText";
 import type { Project } from "@/data/projects";
-import { getProjectCategoryLabels } from "@/data/projects";
 import styles from "./ProjectCard.module.css";
 
 type ProjectCardProps = {
   project: Project;
+  index: number;
 };
 
-export function ProjectCard({ project }: ProjectCardProps) {
-  const categories = getProjectCategoryLabels(project);
+function padIndex(value: number) {
+  return String(value).padStart(2, "0");
+}
 
+export function ProjectCard({ project, index }: ProjectCardProps) {
   return (
-    <article className={styles.card}>
-      <p className={styles.meta}>{categories.join(" · ")}</p>
-      <h3 className={styles.title}>{project.title}</h3>
-      <p className={styles.description}>{project.desc}</p>
-      <div className={styles.tags}>
-        {project.tags.map((tag) => (
-          <span key={tag} className="tag">
-            {tag}
-          </span>
-        ))}
+    <Link
+      href={`/projects/${project.slug}`}
+      className={styles.row}
+      aria-label={`${project.title}. Открыть кейс`}
+    >
+      <div className={styles.inner}>
+        <span className={styles.index}>{padIndex(index)}</span>
+        <ScrambleText as="h3" className={styles.title} text={project.title} />
+        <IconArrowUpRight className={styles.arrow} />
       </div>
-      <Link href={`/projects/${project.slug}`} className={styles.link}>
-        Смотреть проект →
-      </Link>
-    </article>
+      <div className={styles.meta}>
+        <p className={styles.description}>{project.desc}</p>
+        <div className={styles.tags}>
+          {project.tags.map((tag) => (
+            <span key={tag} className={styles.tag}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </Link>
   );
 }

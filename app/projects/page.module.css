@@ -1,7 +1,7 @@
 .page {
   position: relative;
   background: transparent;
-  padding: 3.5rem 0 5rem;
+  padding: 8rem 0 6rem;
 }
 
 .content {
@@ -10,16 +10,23 @@
 }
 
 .header {
-  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .back {
-  display: inline-block;
-  margin-bottom: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--muted);
-  letter-spacing: 0.04em;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
   text-transform: uppercase;
-  font-size: 0.85rem;
 }
 
 .back:hover {
@@ -27,58 +34,149 @@
 }
 
 .label {
-  margin-bottom: 0.75rem;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.25;
 }
 
 .title {
+  margin: 0;
   font-family: var(--font-display-medium);
-  font-size: clamp(2rem, 5vw, 3.6rem);
+  font-size: clamp(2.5rem, 6vw, 5rem);
   font-weight: var(--font-weight-heading);
   font-synthesis: none;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   line-height: 1.05;
-  margin-bottom: 1.5rem;
+}
+
+.catalog {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
 }
 
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1.75rem;
+  padding-bottom: 0.5rem;
 }
 
 .filter {
   appearance: none;
-  border: 0;
-  border-bottom: 1px solid transparent;
-  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.9375rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.035);
   color: var(--muted);
-  padding: 0.35rem 0.15rem;
-  margin-right: 0.85rem;
-  font: inherit;
-  font-size: 0.9rem;
+  font-family: var(--font-display-semibold);
+  font-size: 0.75rem;
+  font-weight: 400;
+  font-synthesis: none;
   letter-spacing: 0.02em;
+  line-height: 1.4;
+  text-transform: uppercase;
   cursor: pointer;
   transition:
     color 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .filter:hover {
   color: var(--text);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .filterActive {
-  color: var(--text);
-  border-bottom-color: var(--accent-2);
+  border-color: transparent;
+  background-color: var(--accent);
+  background-image: var(--btn-gradient);
+  color: #fff;
+  box-shadow: var(--glow);
 }
 
-.grid {
-  display: grid;
-  gap: 1rem;
+.filterActive:hover {
+  color: #fff;
+  filter: brightness(1.05);
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  --item-index: 0;
+  animation: filterSlideUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--item-index) * 55ms);
 }
 
 .empty {
   color: var(--muted);
+  margin: 0;
+  padding: 1.5rem 0;
+}
+
+.discussRow {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.5rem;
+}
+
+.discuss {
+  text-transform: none;
+}
+
+@keyframes filterSlideUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 2.5rem, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item {
+    animation: none;
+  }
+}
+
+@media (max-width: 1200px) {
+  .page {
+    padding: 6rem 0 4rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .page {
+    padding: 5rem 0 3rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .catalog {
+    gap: 1.5rem;
+  }
 }

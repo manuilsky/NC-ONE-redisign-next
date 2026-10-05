@@ -1,0 +1,18 @@
+.root {
+  display: inline;
+}
+
+.char {
+  display: inline-block;
+  text-align: center;
+}
+
+.char::before {
+  content: attr(data-char);
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
+}
