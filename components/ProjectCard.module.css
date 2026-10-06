@@ -92,13 +92,22 @@
   box-sizing: border-box;
   min-height: 2.1875rem;
   padding: 0.5rem 1rem;
+  border: 1px solid transparent;
   border-radius: 999px;
-  border: 1px solid rgba(130, 165, 255, 0.35);
-  background: linear-gradient(
-    90deg,
-    rgba(110, 139, 255, 0.55) 0%,
-    rgba(0, 75, 221, 0.35) 100%
-  );
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, #6e8bff 55%, var(--bg)) 0%,
+      color-mix(in srgb, #004bdd 35%, var(--bg)) 100%
+    )
+      padding-box,
+    linear-gradient(
+      90deg,
+      rgba(130, 165, 255, 0.35),
+      rgba(130, 165, 255, 0.35)
+    )
+      border-box;
+  background-clip: padding-box, border-box;
   color: #fff;
   font-family: var(--font-display-semibold);
   font-size: 0.75rem;

@@ -9,7 +9,7 @@ import styles from "./Header.module.css";
 const links = [
   { href: "/#about", label: "о нас" },
   { href: "/#services", label: "услуги" },
-  { href: "/#projects", label: "кейсы" },
+  { href: "/projects", label: "кейсы" },
   { href: "/#contact", label: "контакты" },
 ];
 
