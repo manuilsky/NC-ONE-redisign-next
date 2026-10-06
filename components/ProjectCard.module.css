@@ -92,23 +92,42 @@
   box-sizing: border-box;
   min-height: 2.1875rem;
   padding: 0.5rem 1rem;
-  border: 1px solid transparent;
+  border: 0;
   border-radius: 999px;
-  background:
-    linear-gradient(
-      90deg,
-      color-mix(in srgb, #6e8bff 55%, var(--bg)) 0%,
-      color-mix(in srgb, #004bdd 35%, var(--bg)) 100%
-    )
-      padding-box,
-    linear-gradient(
-      90deg,
-      rgba(130, 165, 255, 0.35),
-      rgba(130, 165, 255, 0.35)
-    )
-      border-box;
-  background-clip: padding-box, border-box;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, #6e8bff 55%, var(--bg)) 0%,
+    color-mix(in srgb, #004bdd 35%, var(--bg)) 100%
+  );
+  box-shadow:
+    0 0 0 1px var(--bg),
+    inset 0 0 0 1px rgba(130, 165, 255, 0.35);
   color: #fff;
+  font-family: var(--font-display-semibold);
+  font-size: 0.75rem;
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.tagMore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 2.1875rem;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow:
+    0 0 0 1px var(--bg),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.078);
+  color: var(--muted);
   font-family: var(--font-display-semibold);
   font-size: 0.75rem;
   font-weight: 400;

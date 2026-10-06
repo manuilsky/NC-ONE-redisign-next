@@ -11,11 +11,16 @@ type ProjectCardProps = {
   index: number;
 };
 
+const MAX_VISIBLE_TAGS = 4;
+
 function padIndex(value: number) {
   return String(value).padStart(2, "0");
 }
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
+  const visibleTags = project.tags.slice(0, MAX_VISIBLE_TAGS);
+  const extraTags = project.tags.length - visibleTags.length;
+
   return (
     <Link
       href={`/projects/${project.slug}`}
@@ -30,11 +35,14 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       <div className={styles.meta}>
         <p className={styles.description}>{project.desc}</p>
         <div className={styles.tags}>
-          {project.tags.map((tag) => (
+          {visibleTags.map((tag) => (
             <span key={tag} className={styles.tag}>
               {tag}
             </span>
           ))}
+          {extraTags > 0 ? (
+            <span className={styles.tagMore}>+{extraTags}</span>
+          ) : null}
         </div>
       </div>
     </Link>
