@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { ProjectCard } from "@/components/ProjectCard";
 import {
   filterProjectsByCategory,
@@ -17,12 +17,74 @@ type ProjectsCatalogProps = {
 export function ProjectsCatalog({ projects }: ProjectsCatalogProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [animKey, setAnimKey] = useState(0);
+  const listRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLSpanElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
+  const rafRef = useRef(0);
+  const pendingRef = useRef<{ x: number; y: number } | null>(null);
   const visible = filterProjectsByCategory(activeCategory, projects);
 
   const selectCategory = (slug: string) => {
     if (slug === activeCategory) return;
     setActiveCategory(slug);
     setAnimKey((key) => key + 1);
+  };
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const syncRect = () => {
+      rectRef.current = list.getBoundingClientRect();
+    };
+
+    syncRect();
+    window.addEventListener("scroll", syncRect, { passive: true });
+    window.addEventListener("resize", syncRect, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", syncRect);
+      window.removeEventListener("resize", syncRect);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [animKey, visible.length]);
+
+  const flushGlow = () => {
+    rafRef.current = 0;
+    const glow = glowRef.current;
+    const pending = pendingRef.current;
+    if (!glow || !pending) return;
+    glow.style.transform = `translate3d(${pending.x}px, ${pending.y}px, 0)`;
+  };
+
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const list = listRef.current;
+    const glow = glowRef.current;
+    if (!list || !glow) return;
+
+    if (!rectRef.current) {
+      rectRef.current = list.getBoundingClientRect();
+    }
+
+    const rect = rectRef.current;
+    pendingRef.current = {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    };
+    glow.dataset.active = "true";
+
+    if (!rafRef.current) {
+      rafRef.current = requestAnimationFrame(flushGlow);
+    }
+  };
+
+  const onPointerLeave = () => {
+    const glow = glowRef.current;
+    if (!glow) return;
+    glow.dataset.active = "false";
+    pendingRef.current = null;
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = 0;
   };
 
   return (
@@ -47,7 +109,13 @@ export function ProjectsCatalog({ projects }: ProjectsCatalogProps) {
 
       <div key={animKey} className={styles.results}>
         {visible.length > 0 ? (
-          <div className={styles.list}>
+          <div
+            ref={listRef}
+            className={styles.list}
+            onPointerMove={onPointerMove}
+            onPointerLeave={onPointerLeave}
+          >
+            <span ref={glowRef} className={styles.spotlight} aria-hidden="true" />
             {visible.map((project, i) => (
               <div
                 key={project.slug}
