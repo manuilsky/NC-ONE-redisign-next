@@ -140,19 +140,25 @@
 
 @media (max-width: 767px) {
   .inner {
-    gap: 1rem;
+    gap: 1.5rem;
   }
 
   .index {
-    flex-basis: 2rem;
-    width: 2rem;
+    flex-basis: 3rem;
+    width: 3rem;
   }
 
   .meta {
-    padding-left: 0;
+    padding-left: 4.5rem;
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .description {
+    max-width: none;
   }
 }

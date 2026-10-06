@@ -217,14 +217,34 @@
 
 @media (max-width: 767px) {
   .page {
-    padding: 5rem 0 3rem;
+    padding: 4rem 0 6rem;
+  }
+
+  .header {
+    gap: 1rem;
+    margin-bottom: 4rem;
   }
 
   .title {
     font-size: 2rem;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .catalog {
+    padding-top: 1rem;
+    padding-bottom: 0;
   }
 
   .filters {
-    padding-bottom: 1.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .discussRow {
+    padding-top: 0;
+  }
+
+  .discuss {
+    width: 100%;
   }
 }
