@@ -209,12 +209,47 @@
   }
 }
 
+/* Tablet: 768–1200 — Figma Tablet (768) / Portfolio */
 @media (max-width: 1200px) {
   .page {
-    padding: 6rem 0 4rem;
+    padding: 4rem 0 6rem;
+  }
+
+  .header {
+    gap: 1rem;
+    margin-bottom: 4rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+
+  .catalog {
+    gap: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 0;
+  }
+
+  .filters {
+    padding-bottom: 2.5rem;
+  }
+
+  .results {
+    gap: 2rem;
+  }
+
+  .discussRow {
+    padding-top: 0;
+  }
+
+  .discuss {
+    width: 100%;
   }
 }
 
+/* Mobile: 375–767 — Figma Mobile (375) */
 @media (max-width: 767px) {
   .page {
     padding: 4rem 0 6rem;
@@ -232,6 +267,7 @@
   }
 
   .catalog {
+    gap: 0;
     padding-top: 1rem;
     padding-bottom: 0;
   }

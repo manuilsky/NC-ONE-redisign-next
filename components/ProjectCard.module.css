@@ -138,6 +138,16 @@
   white-space: nowrap;
 }
 
+/* Tablet: 768–1200 — Figma Tablet (768) / Work Row */
+@media (max-width: 1200px) {
+  .title {
+    font-size: 2.5rem;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Mobile: 375–767 — Figma Mobile (375) */
 @media (max-width: 767px) {
   .inner {
     gap: 1.5rem;
