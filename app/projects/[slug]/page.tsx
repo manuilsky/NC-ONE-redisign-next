@@ -67,6 +67,19 @@ function splitParagraphs(text: string) {
   return text.split(/\n\n+/).filter(Boolean);
 }
 
+const FACT_ORDER: CaseFact["icon"][] = [
+  "platform",
+  "team",
+  "type",
+  "duration",
+];
+
+function orderFacts(facts: CaseFact[]) {
+  return [...facts].sort(
+    (a, b) => FACT_ORDER.indexOf(a.icon) - FACT_ORDER.indexOf(b.icon),
+  );
+}
+
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params;
   const project = getProjectBySlug(slug);
@@ -109,10 +122,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <p className={styles.lead}>{project.desc}</p>
 
               <dl className={styles.facts}>
-                {project.facts.map((fact) => (
+                {orderFacts(project.facts).map((fact) => (
                   <div key={fact.label} className={styles.fact}>
                     <span className={styles.factIcon}>{factIcons[fact.icon]}</span>
-                    <div>
+                    <div className={styles.factBody}>
                       <dt>{fact.label}</dt>
                       <dd>{fact.value}</dd>
                     </div>
@@ -158,18 +171,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <IconClient />
             </span>
             <h2>О клиенте</h2>
-            {splitParagraphs(project.clientInfo).map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+            <p>{project.clientInfo}</p>
           </article>
           <article className={styles.introCard}>
             <span className={styles.introIcon}>
               <IconTask />
             </span>
             <h2>Задача</h2>
-            {splitParagraphs(project.problem).map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+            <p>{project.problem}</p>
           </article>
         </div>
       </section>
