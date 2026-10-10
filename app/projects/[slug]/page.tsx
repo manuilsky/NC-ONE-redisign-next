@@ -297,18 +297,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
 function DeviceMock({ project }: { project: Project }) {
   return (
-    <div className={styles.mock} aria-hidden="true">
-      <div className={styles.mockBar}>
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className={styles.mockScreen}>
-        {project.cover ? (
-          <Image src={project.cover} alt="" fill sizes="440px" />
-        ) : (
-          <span>Screenshot</span>
-        )}
+    <div className={styles.mockWrap} aria-hidden="true">
+      <div className={styles.mock}>
+        <div className={styles.mockBar}>
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className={styles.mockScreen}>
+          {project.cover ? (
+            <Image src={project.cover} alt="" fill sizes="440px" />
+          ) : (
+            <span>Screenshot</span>
+          )}
+        </div>
       </div>
     </div>
   );
