@@ -176,6 +176,7 @@
   white-space: pre;
 }
 
+/* Tablet: 768–1200 — Figma Tablet (768) */
 @media (max-width: 1200px) {
   .hero {
     padding: 5.5rem 0 2rem;
@@ -209,7 +210,8 @@
   }
 }
 
-@media (max-width: 720px) {
+/* Mobile: 375–767 — Figma Mobile (375) */
+@media (max-width: 767px) {
   .hero {
     padding: 5rem 0 2rem;
   }
