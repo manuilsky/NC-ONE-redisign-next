@@ -78,14 +78,38 @@
   display: block;
 }
 
-.panel {
+.panel,
+.panelCollapsed {
   display: grid;
-  gap: 1.25rem;
-  padding: 0 0 2rem 2.75rem;
+  transition:
+    grid-template-rows 0.28s ease,
+    opacity 0.22s ease;
+}
+
+.panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
 }
 
 .panelCollapsed {
-  display: none;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.panelInner {
+  overflow: hidden;
+  display: grid;
+  gap: 1.25rem;
+  padding: 0 0 2rem 2.75rem;
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panelCollapsed {
+    transition: none;
+  }
 }
 
 .description {
@@ -159,7 +183,7 @@
     flex-basis: 2.25rem;
   }
 
-  .panel {
+  .panelInner {
     padding-left: 0;
   }
 
@@ -187,7 +211,7 @@
     line-height: 1.2;
   }
 
-  .panel {
+  .panelInner {
     gap: 1.25rem;
     padding-left: 0;
     padding-bottom: 2rem;

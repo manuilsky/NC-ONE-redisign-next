@@ -103,15 +103,17 @@ export function ServicesAccordion({ items }: ServicesAccordionProps) {
               role="region"
               aria-labelledby={headerId}
               className={open ? styles.panel : styles.panelCollapsed}
-              hidden={!open}
+              aria-hidden={!open}
             >
-              <p className={styles.description}>{item.description}</p>
-              <div className={styles.tags}>
-                {item.tags.map((tag) => (
-                  <span key={tag} className={styles.chip}>
-                    {tag}
-                  </span>
-                ))}
+              <div className={styles.panelInner}>
+                <p className={styles.description}>{item.description}</p>
+                <div className={styles.tags}>
+                  {item.tags.map((tag) => (
+                    <span key={tag} className={styles.chip}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </Reveal>
