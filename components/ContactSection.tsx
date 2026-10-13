@@ -1,6 +1,7 @@
 import { ContactForm } from "@/components/ContactForm";
 import { Reveal } from "@/components/Reveal";
 import { finalCta } from "@/data/home";
+import { withBasePath } from "@/lib/paths";
 import styles from "./ContactSection.module.css";
 
 export function ContactSection() {
@@ -45,7 +46,7 @@ export function ContactSection() {
               rel="noreferrer"
             >
               <img
-                src="/icons/telegram.svg"
+                src={withBasePath("/icons/telegram.svg")}
                 alt=""
                 width={16}
                 height={16}

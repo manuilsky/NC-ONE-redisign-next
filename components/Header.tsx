@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { withBasePath } from "@/lib/paths";
 import styles from "./Header.module.css";
 
 const links = [
@@ -127,7 +128,7 @@ export function Header() {
       <div className={styles.inner}>
         <Link href="/" className={styles.logo} aria-label="НК 1 — на главную">
           <Image
-            src="/logo.png"
+            src={withBasePath("/logo.png")}
             alt="НК 1 — новая компания один"
             width={300}
             height={101}
