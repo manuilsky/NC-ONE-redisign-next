@@ -12,8 +12,9 @@ type NavigatorWithHints = Navigator & {
   connection?: { saveData?: boolean; effectiveType?: string };
 };
 
-const FRAME_SECONDS = 0.2;
-const SLOW_SEEK_MS = 120;
+const FRAME_SECONDS = 0.1;
+const EASE = 0.32;
+const SLOW_SEEK_MS = 160;
 const SEEK_WATCHDOG_MS = 900;
 
 function canUseScrollVideo() {
@@ -33,9 +34,12 @@ function isCoarsePointer() {
   return window.matchMedia("(pointer: coarse)").matches;
 }
 
+function clampTime(raw: number, duration: number) {
+  return Math.min(Math.max(raw, 0), Math.max(duration - 0.001, 0));
+}
+
 function snapTime(raw: number, step: number, duration: number) {
-  const snapped = Math.round(raw / step) * step;
-  return Math.min(Math.max(snapped, 0), Math.max(duration - 0.001, 0));
+  return clampTime(Math.round(raw / step) * step, duration);
 }
 
 export function ScrollVideoBackground({
@@ -57,23 +61,27 @@ export function ScrollVideoBackground({
 
     let ready = false;
     let seeking = false;
-    let pending: number | null = null;
     let raf = 0;
     let lastApplied = -1;
+    let playhead = 0;
+    let aim = 0;
     let step = FRAME_SECONDS;
     let seekStartedAt = 0;
     let seekWatchdog = 0;
     let disposed = false;
     const seekDurations: number[] = [];
+    const mobile = isCoarsePointer();
+    // Mobile eases a bit more gently so catch-up doesn't skip frames.
+    const ease = mobile ? 0.22 : EASE;
 
-    const targetTime = () => {
+    const scrollTarget = () => {
       if (!video.duration || !Number.isFinite(video.duration)) return 0;
       const maxScroll = Math.max(
         document.documentElement.scrollHeight - window.innerHeight,
         1,
       );
       const progress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
-      return snapTime(progress * video.duration, step, video.duration);
+      return clampTime(progress * video.duration, video.duration);
     };
 
     const finishSeek = () => {
@@ -84,6 +92,7 @@ export function ScrollVideoBackground({
 
       const elapsed = performance.now() - seekStartedAt;
       seeking = false;
+      playhead = lastApplied;
 
       if (elapsed > 0 && Number.isFinite(elapsed)) {
         seekDurations.push(elapsed);
@@ -92,28 +101,22 @@ export function ScrollVideoBackground({
             seekDurations.reduce((sum, value) => sum + value, 0) /
             seekDurations.length;
           seekDurations.length = 0;
-          // Soften step on slow decoders — never disable the video.
           if (avg >= SLOW_SEEK_MS) {
-            step = Math.min(step * 2, 0.8);
+            // Cap so we never fall back to very coarse jumps.
+            step = Math.min(step * 1.5, mobile ? 0.35 : 0.5);
           }
         }
       }
 
-      if (pending != null) {
-        const next = pending;
-        pending = null;
-        apply(next);
+      // Keep easing toward the latest scroll aim instead of hard-jumping.
+      if (Math.abs(aim - playhead) >= step * 0.45) {
+        schedule();
       }
     };
 
     const apply = (time: number) => {
       if (!ready || disposed || document.hidden) return;
-      if (Math.abs(time - lastApplied) < step * 0.49) return;
-
-      if (seeking) {
-        pending = time;
-        return;
-      }
+      if (Math.abs(time - lastApplied) < step * 0.45) return;
 
       lastApplied = time;
       seeking = true;
@@ -126,25 +129,43 @@ export function ScrollVideoBackground({
         return;
       }
 
-      // Long fallback only — normal pacing stays on real `seeked` (smoother).
       seekWatchdog = window.setTimeout(finishSeek, SEEK_WATCHDOG_MS);
     };
 
-    const syncToScroll = () => {
+    const tick = () => {
       raf = 0;
-      apply(targetTime());
+      if (!ready || disposed || document.hidden) return;
+      if (seeking) return;
+
+      const diff = aim - playhead;
+      if (Math.abs(diff) < step * 0.45) return;
+
+      // Ease toward scroll target — closes the gap gradually (feels smoother).
+      let next = playhead + diff * ease;
+      if (Math.abs(next - playhead) < step) {
+        next = playhead + Math.sign(diff) * step;
+      }
+      next = snapTime(next, step, video.duration || 0);
+      apply(next);
     };
 
     const schedule = () => {
       if (raf || disposed) return;
-      raf = window.requestAnimationFrame(syncToScroll);
+      raf = window.requestAnimationFrame(tick);
+    };
+
+    const onScroll = () => {
+      aim = scrollTarget();
+      schedule();
     };
 
     const markReady = () => {
       if (ready || disposed) return;
       ready = true;
       video.pause();
-      syncToScroll();
+      playhead = 0;
+      aim = scrollTarget();
+      schedule();
     };
 
     let armed = false;
@@ -155,7 +176,6 @@ export function ScrollVideoBackground({
       window.removeEventListener("pointerdown", armDecoder);
     };
 
-    // iOS will not paint scrubbed frames until media is play()-unlocked once.
     const armDecoder = () => {
       if (disposed || armed || arming) return;
       arming = true;
@@ -169,7 +189,8 @@ export function ScrollVideoBackground({
             video.pause();
             armed = true;
             disarmGestures();
-            syncToScroll();
+            aim = scrollTarget();
+            schedule();
           })
           .catch(() => {
             arming = false;
@@ -179,15 +200,14 @@ export function ScrollVideoBackground({
         video.pause();
         armed = true;
         disarmGestures();
-        syncToScroll();
+        aim = scrollTarget();
+        schedule();
       }
     };
 
     const onVisibility = () => {
-      if (document.hidden) {
-        pending = null;
-        return;
-      }
+      if (document.hidden) return;
+      aim = scrollTarget();
       schedule();
     };
 
@@ -206,23 +226,23 @@ export function ScrollVideoBackground({
     else video.addEventListener("loadedmetadata", markReady);
 
     video.addEventListener("seeked", finishSeek);
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     document.addEventListener("visibilitychange", onVisibility);
     motion.addEventListener("change", onMotion);
 
     window.addEventListener("touchstart", armDecoder, { passive: true });
     window.addEventListener("pointerdown", armDecoder, { passive: true });
 
-    if (!isCoarsePointer()) armDecoder();
+    if (!mobile) armDecoder();
 
     return () => {
       disposed = true;
       if (seekWatchdog) window.clearTimeout(seekWatchdog);
       video.removeEventListener("loadedmetadata", markReady);
       video.removeEventListener("seeked", finishSeek);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
       document.removeEventListener("visibilitychange", onVisibility);
       motion.removeEventListener("change", onMotion);
       disarmGestures();
