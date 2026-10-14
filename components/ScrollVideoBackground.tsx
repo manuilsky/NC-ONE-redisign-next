@@ -13,8 +13,8 @@ type NavigatorWithHints = Navigator & {
 };
 
 const FRAME_SECONDS = 0.2;
-const MOBILE_FRAME_SECONDS = 0.4;
-const SEEK_WATCHDOG_MS = 280;
+const SLOW_SEEK_MS = 120;
+const SEEK_WATCHDOG_MS = 900;
 
 function canUseScrollVideo() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -60,9 +60,11 @@ export function ScrollVideoBackground({
     let pending: number | null = null;
     let raf = 0;
     let lastApplied = -1;
-    let step = isCoarsePointer() ? MOBILE_FRAME_SECONDS : FRAME_SECONDS;
+    let step = FRAME_SECONDS;
+    let seekStartedAt = 0;
     let seekWatchdog = 0;
     let disposed = false;
+    const seekDurations: number[] = [];
 
     const targetTime = () => {
       if (!video.duration || !Number.isFinite(video.duration)) return 0;
@@ -79,7 +81,23 @@ export function ScrollVideoBackground({
         window.clearTimeout(seekWatchdog);
         seekWatchdog = 0;
       }
+
+      const elapsed = performance.now() - seekStartedAt;
       seeking = false;
+
+      if (elapsed > 0 && Number.isFinite(elapsed)) {
+        seekDurations.push(elapsed);
+        if (seekDurations.length >= 6) {
+          const avg =
+            seekDurations.reduce((sum, value) => sum + value, 0) /
+            seekDurations.length;
+          seekDurations.length = 0;
+          // Soften step on slow decoders — never disable the video.
+          if (avg >= SLOW_SEEK_MS) {
+            step = Math.min(step * 2, 0.8);
+          }
+        }
+      }
 
       if (pending != null) {
         const next = pending;
@@ -99,6 +117,7 @@ export function ScrollVideoBackground({
 
       lastApplied = time;
       seeking = true;
+      seekStartedAt = performance.now();
 
       try {
         video.currentTime = time;
@@ -107,7 +126,7 @@ export function ScrollVideoBackground({
         return;
       }
 
-      // Safari/iOS often never fires `seeked` on a paused scrub video.
+      // Long fallback only — normal pacing stays on real `seeked` (smoother).
       seekWatchdog = window.setTimeout(finishSeek, SEEK_WATCHDOG_MS);
     };
 
@@ -136,8 +155,7 @@ export function ScrollVideoBackground({
       window.removeEventListener("pointerdown", armDecoder);
     };
 
-    // Real iPhones will not paint scrubbed frames until media is play()-unlocked
-    // by a user gesture. First successful play/pause is enough; then we scrub.
+    // iOS will not paint scrubbed frames until media is play()-unlocked once.
     const armDecoder = () => {
       if (disposed || armed || arming) return;
       arming = true;
@@ -155,7 +173,6 @@ export function ScrollVideoBackground({
           })
           .catch(() => {
             arming = false;
-            // Retry on the next gesture (src may still be loading).
           });
       } else {
         arming = false;
@@ -194,11 +211,9 @@ export function ScrollVideoBackground({
     document.addEventListener("visibilitychange", onVisibility);
     motion.addEventListener("change", onMotion);
 
-    // Only real gestures unlock decoding on iOS (scroll alone is not enough).
     window.addEventListener("touchstart", armDecoder, { passive: true });
     window.addEventListener("pointerdown", armDecoder, { passive: true });
 
-    // Desktop muted autoplay is usually allowed — arm immediately.
     if (!isCoarsePointer()) armDecoder();
 
     return () => {
