@@ -25,6 +25,16 @@
   object-position: center center;
 }
 
+/* Keep the poster visible until the scrub frame is painted (avoids mobile jump). */
+.videoPending {
+  opacity: 0;
+}
+
+.posterGone {
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
 .veil {
   position: absolute;
   inset: 0;

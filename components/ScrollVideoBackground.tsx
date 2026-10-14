@@ -17,6 +17,8 @@ const FRAME_SECONDS = 1 / 24;
 const EASE = 0.45;
 const SLOW_SEEK_MS = 140;
 const SEEK_WATCHDOG_MS = 900;
+/** Treat as page bottom — mobile chrome/subpixels rarely hit exact maxScroll. */
+const SCROLL_END_PX = 3;
 
 function canUseScrollVideo() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -36,11 +38,23 @@ function isCoarsePointer() {
 }
 
 function clampTime(raw: number, duration: number) {
-  return Math.min(Math.max(raw, 0), Math.max(duration - 0.001, 0));
+  if (!duration || !Number.isFinite(duration)) return 0;
+  // Leave a tiny epsilon so browsers accept the seek near EOF.
+  return Math.min(Math.max(raw, 0), Math.max(duration - 0.05, 0));
 }
 
 function snapTime(raw: number, step: number, duration: number) {
   return clampTime(Math.round(raw / step) * step, duration);
+}
+
+function scrollProgress() {
+  const maxScroll = Math.max(
+    document.documentElement.scrollHeight - window.innerHeight,
+    1,
+  );
+  const y = Math.max(window.scrollY, 0);
+  if (y >= maxScroll - SCROLL_END_PX) return 1;
+  return Math.min(Math.max(y / maxScroll, 0), 1);
 }
 
 export function ScrollVideoBackground({
@@ -49,6 +63,8 @@ export function ScrollVideoBackground({
 }: ScrollVideoBackgroundProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [useVideo, setUseVideo] = useState(false);
+  /** Hide poster only after video has painted the scroll-synced frame. */
+  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
     if (!src) return;
@@ -60,6 +76,8 @@ export function ScrollVideoBackground({
     const video = videoRef.current;
     if (!video || !src || !useVideo) return;
 
+    setRevealed(false);
+
     let ready = false;
     let seeking = false;
     let raf = 0;
@@ -70,6 +88,7 @@ export function ScrollVideoBackground({
     let seekStartedAt = 0;
     let seekWatchdog = 0;
     let disposed = false;
+    let painted = false;
     const seekDurations: number[] = [];
     const mobile = isCoarsePointer();
     // Slightly softer ease on phones so slow scrolls don't skip neighboring frames.
@@ -77,12 +96,28 @@ export function ScrollVideoBackground({
 
     const scrollTarget = () => {
       if (!video.duration || !Number.isFinite(video.duration)) return 0;
-      const maxScroll = Math.max(
-        document.documentElement.scrollHeight - window.innerHeight,
-        1,
-      );
-      const progress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
-      return clampTime(progress * video.duration, video.duration);
+      return clampTime(scrollProgress() * video.duration, video.duration);
+    };
+
+    const endTime = () => clampTime(video.duration || 0, video.duration || 0);
+
+    const revealIfNeeded = () => {
+      if (disposed || painted) return;
+      painted = true;
+      const paint = () => {
+        if (disposed) return;
+        setRevealed(true);
+      };
+      const rvfc = (
+        video as HTMLVideoElement & {
+          requestVideoFrameCallback?: (cb: () => void) => number;
+        }
+      ).requestVideoFrameCallback;
+      if (typeof rvfc === "function") {
+        rvfc.call(video, paint);
+      } else {
+        requestAnimationFrame(() => requestAnimationFrame(paint));
+      }
     };
 
     const finishSeek = () => {
@@ -109,6 +144,8 @@ export function ScrollVideoBackground({
         }
       }
 
+      revealIfNeeded();
+
       // Keep easing toward the latest scroll aim instead of hard-jumping.
       if (Math.abs(aim - playhead) >= step * 0.45) {
         schedule();
@@ -117,7 +154,11 @@ export function ScrollVideoBackground({
 
     const apply = (time: number) => {
       if (!ready || disposed || document.hidden) return;
-      if (Math.abs(time - lastApplied) < step * 0.45) return;
+      if (Math.abs(time - lastApplied) < step * 0.45) {
+        // Still count as painted when already on the target frame (e.g. top of page).
+        if (lastApplied >= 0) revealIfNeeded();
+        return;
+      }
 
       lastApplied = time;
       seeking = true;
@@ -139,7 +180,19 @@ export function ScrollVideoBackground({
       if (seeking) return;
 
       const diff = aim - playhead;
-      if (Math.abs(diff) < step * 0.45) return;
+      if (Math.abs(diff) < step * 0.45) {
+        // Force the true last frame once the page is at the bottom.
+        if (scrollProgress() >= 1 && playhead < endTime() - step * 0.1) {
+          apply(endTime());
+        }
+        return;
+      }
+
+      // Near EOF: skip easing so mobile scrub actually reaches the last frame.
+      if (aim >= endTime() - step) {
+        apply(endTime());
+        return;
+      }
 
       // Ease toward scroll target — closes the gap gradually (feels smoother).
       let next = playhead + diff * ease;
@@ -165,7 +218,10 @@ export function ScrollVideoBackground({
       ready = true;
       video.pause();
       playhead = 0;
+      lastApplied = -1;
       aim = scrollTarget();
+      // Seek to the current scroll frame before revealing over the poster.
+      apply(snapTime(aim, step, video.duration || 0));
       schedule();
     };
 
@@ -191,6 +247,8 @@ export function ScrollVideoBackground({
             armed = true;
             disarmGestures();
             aim = scrollTarget();
+            lastApplied = -1;
+            apply(snapTime(aim, step, video.duration || 0));
             schedule();
           })
           .catch(() => {
@@ -202,6 +260,8 @@ export function ScrollVideoBackground({
         armed = true;
         disarmGestures();
         aim = scrollTarget();
+        lastApplied = -1;
+        apply(snapTime(aim, step, video.duration || 0));
         schedule();
       }
     };
@@ -235,7 +295,8 @@ export function ScrollVideoBackground({
     window.addEventListener("touchstart", armDecoder, { passive: true });
     window.addEventListener("pointerdown", armDecoder, { passive: true });
 
-    if (!mobile) armDecoder();
+    // Try unlocking immediately; gesture listeners remain as a mobile fallback.
+    armDecoder();
 
     return () => {
       disposed = true;
@@ -257,7 +318,7 @@ export function ScrollVideoBackground({
       <div className={styles.fallback} />
       {poster ? (
         <img
-          className={styles.video}
+          className={`${styles.video}${revealed ? ` ${styles.posterGone}` : ""}`}
           src={poster}
           alt=""
           decoding="async"
@@ -266,9 +327,8 @@ export function ScrollVideoBackground({
       {useVideo && src ? (
         <video
           ref={videoRef}
-          className={styles.video}
+          className={`${styles.video}${revealed ? "" : ` ${styles.videoPending}`}`}
           src={src}
-          poster={poster}
           muted
           playsInline
           preload="auto"
