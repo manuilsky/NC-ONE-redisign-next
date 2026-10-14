@@ -9,13 +9,12 @@ type ScrollVideoBackgroundProps = {
 };
 
 type NavigatorWithHints = Navigator & {
-  deviceMemory?: number;
   connection?: { saveData?: boolean; effectiveType?: string };
 };
 
 const FRAME_SECONDS = 0.2;
-const SLOW_SEEK_MS = 120;
-const FAIL_SEEK_MS = 220;
+const MOBILE_FRAME_SECONDS = 0.4;
+const SEEK_WATCHDOG_MS = 280;
 
 function canUseScrollVideo() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -26,12 +25,12 @@ function canUseScrollVideo() {
   if (nav.connection?.saveData) return false;
   if (nav.connection?.effectiveType === "slow-2g") return false;
   if (nav.connection?.effectiveType === "2g") return false;
-  if (nav.deviceMemory != null && nav.deviceMemory <= 2) return false;
-  if (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 2) {
-    return false;
-  }
 
   return true;
+}
+
+function isCoarsePointer() {
+  return window.matchMedia("(pointer: coarse)").matches;
 }
 
 function snapTime(raw: number, step: number, duration: number) {
@@ -61,9 +60,9 @@ export function ScrollVideoBackground({
     let pending: number | null = null;
     let raf = 0;
     let lastApplied = -1;
-    let step = FRAME_SECONDS;
-    let seekStartedAt = 0;
-    const seekDurations: number[] = [];
+    let step = isCoarsePointer() ? MOBILE_FRAME_SECONDS : FRAME_SECONDS;
+    let seekWatchdog = 0;
+    let disposed = false;
 
     const targetTime = () => {
       if (!video.duration || !Number.isFinite(video.duration)) return 0;
@@ -75,8 +74,22 @@ export function ScrollVideoBackground({
       return snapTime(progress * video.duration, step, video.duration);
     };
 
+    const finishSeek = () => {
+      if (seekWatchdog) {
+        window.clearTimeout(seekWatchdog);
+        seekWatchdog = 0;
+      }
+      seeking = false;
+
+      if (pending != null) {
+        const next = pending;
+        pending = null;
+        apply(next);
+      }
+    };
+
     const apply = (time: number) => {
-      if (!ready || document.hidden) return;
+      if (!ready || disposed || document.hidden) return;
       if (Math.abs(time - lastApplied) < step * 0.49) return;
 
       if (seeking) {
@@ -86,8 +99,16 @@ export function ScrollVideoBackground({
 
       lastApplied = time;
       seeking = true;
-      seekStartedAt = performance.now();
-      video.currentTime = time;
+
+      try {
+        video.currentTime = time;
+      } catch {
+        finishSeek();
+        return;
+      }
+
+      // Safari/iOS often never fires `seeked` on a paused scrub video.
+      seekWatchdog = window.setTimeout(finishSeek, SEEK_WATCHDOG_MS);
     };
 
     const syncToScroll = () => {
@@ -96,41 +117,53 @@ export function ScrollVideoBackground({
     };
 
     const schedule = () => {
-      if (raf) return;
+      if (raf || disposed) return;
       raf = window.requestAnimationFrame(syncToScroll);
     };
 
-    const onSeeked = () => {
-      const elapsed = performance.now() - seekStartedAt;
-      seeking = false;
-
-      seekDurations.push(elapsed);
-      if (seekDurations.length >= 6) {
-        const avg =
-          seekDurations.reduce((sum, value) => sum + value, 0) /
-          seekDurations.length;
-        seekDurations.length = 0;
-
-        if (avg >= FAIL_SEEK_MS) {
-          setUseVideo(false);
-          return;
-        }
-        if (avg >= SLOW_SEEK_MS) {
-          step = Math.min(step * 2, 0.8);
-        }
-      }
-
-      if (pending != null) {
-        const next = pending;
-        pending = null;
-        apply(next);
-      }
-    };
-
-    const onReady = () => {
+    const markReady = () => {
+      if (ready || disposed) return;
       ready = true;
       video.pause();
       syncToScroll();
+    };
+
+    let armed = false;
+    let arming = false;
+
+    const disarmGestures = () => {
+      window.removeEventListener("touchstart", armDecoder);
+      window.removeEventListener("pointerdown", armDecoder);
+    };
+
+    // Real iPhones will not paint scrubbed frames until media is play()-unlocked
+    // by a user gesture. First successful play/pause is enough; then we scrub.
+    const armDecoder = () => {
+      if (disposed || armed || arming) return;
+      arming = true;
+
+      const attempt = video.play();
+      if (attempt && typeof attempt.then === "function") {
+        attempt
+          .then(() => {
+            arming = false;
+            if (disposed || armed) return;
+            video.pause();
+            armed = true;
+            disarmGestures();
+            syncToScroll();
+          })
+          .catch(() => {
+            arming = false;
+            // Retry on the next gesture (src may still be loading).
+          });
+      } else {
+        arming = false;
+        video.pause();
+        armed = true;
+        disarmGestures();
+        syncToScroll();
+      }
     };
 
     const onVisibility = () => {
@@ -146,23 +179,40 @@ export function ScrollVideoBackground({
       if (motion.matches) setUseVideo(false);
     };
 
-    if (video.readyState >= 1) onReady();
-    else video.addEventListener("loadedmetadata", onReady);
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
 
-    video.addEventListener("seeked", onSeeked);
+    if (video.readyState >= 1) markReady();
+    else video.addEventListener("loadedmetadata", markReady);
+
+    video.addEventListener("seeked", finishSeek);
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     document.addEventListener("visibilitychange", onVisibility);
     motion.addEventListener("change", onMotion);
 
+    // Only real gestures unlock decoding on iOS (scroll alone is not enough).
+    window.addEventListener("touchstart", armDecoder, { passive: true });
+    window.addEventListener("pointerdown", armDecoder, { passive: true });
+
+    // Desktop muted autoplay is usually allowed — arm immediately.
+    if (!isCoarsePointer()) armDecoder();
+
     return () => {
-      video.removeEventListener("loadedmetadata", onReady);
-      video.removeEventListener("seeked", onSeeked);
+      disposed = true;
+      if (seekWatchdog) window.clearTimeout(seekWatchdog);
+      video.removeEventListener("loadedmetadata", markReady);
+      video.removeEventListener("seeked", finishSeek);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
       document.removeEventListener("visibilitychange", onVisibility);
       motion.removeEventListener("change", onMotion);
+      disarmGestures();
       if (raf) window.cancelAnimationFrame(raf);
+      video.pause();
     };
   }, [src, useVideo]);
 
