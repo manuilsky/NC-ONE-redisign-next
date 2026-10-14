@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ContactSection } from "@/components/ContactSection";
+import { HashLink } from "@/components/HashLink";
 import { ProjectsSection } from "@/components/ProjectsSection";
 import { Reveal } from "@/components/Reveal";
 import { ServicesSection } from "@/components/ServicesSection";
@@ -26,9 +26,9 @@ export default function HomePage() {
             {hero.subtitle}
           </Reveal>
           <Reveal delay={200}>
-            <Link href="/#contact" className="button">
+            <HashLink href="/#contact" className="button">
               {hero.cta} <span aria-hidden="true">→</span>
-            </Link>
+            </HashLink>
           </Reveal>
           <Reveal as="p" className={styles.scrollHint} delay={280}>
             {hero.scrollHint}
@@ -53,9 +53,9 @@ export default function HomePage() {
               </Reveal>
             ))}
             <Reveal delay={240} className={styles.aboutCta}>
-              <Link href="/#contact" className="button">
+              <HashLink href="/#contact" className="button">
                 {about.cta} <span aria-hidden="true">→</span>
-              </Link>
+              </HashLink>
             </Reveal>
           </div>
           <div className={styles.statsGrid}>

@@ -15,6 +15,7 @@ import {
   IconTeam,
   IconType,
 } from "@/components/CaseIcons";
+import { HashLink } from "@/components/HashLink";
 import { StarfieldTunnel } from "@/components/StarfieldTunnel";
 import {
   caseCtaChips,
@@ -134,9 +135,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </dl>
 
               <div className={styles.actions}>
-                <Link href="/#contact" className="button">
+                <HashLink href="/#contact" className="button">
                   Обсудить проект <span aria-hidden="true">→</span>
-                </Link>
+                </HashLink>
                 <Link href="/projects" className="button buttonGhost">
                   Все кейсы
                 </Link>
@@ -266,9 +267,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 <li key={chip}>{chip}</li>
               ))}
             </ul>
-            <Link href="/#contact" className="button">
+            <HashLink href="/#contact" className="button">
               Обсудить проект <span aria-hidden="true">→</span>
-            </Link>
+            </HashLink>
           </div>
 
           <Link href="/projects" className={`button buttonGhost ${styles.allProjects}`}>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { HashLink } from "@/components/HashLink";
 import { Reveal } from "@/components/Reveal";
 import { ServicesAccordion } from "@/components/ServicesAccordion";
 import {
@@ -43,9 +43,9 @@ export function ServicesSection() {
               </span>
             ))}
           </div>
-          <Link href="/#contact" className={`button ${styles.partnerCta}`}>
+          <HashLink href="/#contact" className={`button ${styles.partnerCta}`}>
             {partnerCta.cta} <span aria-hidden="true">→</span>
-          </Link>
+          </HashLink>
         </Reveal>
       </div>
     </section>

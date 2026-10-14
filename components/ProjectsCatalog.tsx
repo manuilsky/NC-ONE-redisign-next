@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { HashLink } from "@/components/HashLink";
 import { ProjectCard } from "@/components/ProjectCard";
 import {
   filterProjectsByCategory,
@@ -136,9 +137,12 @@ export function ProjectsCatalog({ projects }: ProjectsCatalogProps) {
           className={`${styles.discussRow} ${styles.item}`}
           style={{ "--item-index": visible.length } as CSSProperties}
         >
-          <Link href="#contact" className={`button buttonGhost ${styles.discuss}`}>
+          <HashLink
+            href="/#contact"
+            className={`button buttonGhost ${styles.discuss}`}
+          >
             Обсудить проект <span aria-hidden="true">→</span>
-          </Link>
+          </HashLink>
         </div>
       </div>
     </div>

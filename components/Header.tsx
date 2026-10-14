@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { HashLink } from "@/components/HashLink";
 import { withBasePath } from "@/lib/paths";
 import styles from "./Header.module.css";
 
@@ -101,24 +102,24 @@ export function Header() {
 
         <nav className={styles.mobileNav} aria-label="Мобильная навигация">
           {links.map((link) => (
-            <Link
+            <HashLink
               key={link.href}
               href={link.href}
               className={styles.mobileNavLink}
               onClick={closeMenu}
             >
               [ {link.label} ]
-            </Link>
+            </HashLink>
           ))}
         </nav>
 
-        <Link
+        <HashLink
           href="/#contact"
           className={`button buttonGhost ${styles.mobileCta}`}
           onClick={closeMenu}
         >
           связаться с нами <span aria-hidden="true">→</span>
-        </Link>
+        </HashLink>
       </div>,
       document.body,
     );
@@ -139,15 +140,19 @@ export function Header() {
 
         <nav className={styles.nav} aria-label="Основная навигация">
           {links.map((link) => (
-            <Link key={link.href} href={link.href} className={styles.navLink}>
+            <HashLink
+              key={link.href}
+              href={link.href}
+              className={styles.navLink}
+            >
               [ {link.label} ]
-            </Link>
+            </HashLink>
           ))}
         </nav>
 
-        <Link href="/#contact" className={`button ${styles.cta}`}>
+        <HashLink href="/#contact" className={`button ${styles.cta}`}>
           Связаться с нами <span aria-hidden="true">→</span>
-        </Link>
+        </HashLink>
 
         <button
           type="button"

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Commissioner } from "next/font/google";
 import { Footer } from "@/components/Footer";
+import { HashScroll } from "@/components/HashScroll";
 import { Header } from "@/components/Header";
 import { ScrollVideoBackground } from "@/components/ScrollVideoBackground";
 import { SCROLL_BG_POSTER, SCROLL_BG_VIDEO } from "@/data/media";
@@ -31,6 +32,7 @@ export default function RootLayout({
     <html lang="ru" className={body.variable}>
       <body className={body.className}>
         <div className="site">
+          <HashScroll />
           <ScrollVideoBackground
             src={SCROLL_BG_VIDEO || undefined}
             poster={SCROLL_BG_POSTER || undefined}
