@@ -57,10 +57,33 @@ function scrollProgress() {
   return Math.min(Math.max(y / maxScroll, 0), 1);
 }
 
+/** Explicit cover box — matches poster & video on iOS (object-fit is flaky there). */
+function fitCover(
+  el: HTMLElement,
+  mediaW: number,
+  mediaH: number,
+  viewportW: number,
+  viewportH: number,
+) {
+  if (mediaW <= 0 || mediaH <= 0 || viewportW <= 0 || viewportH <= 0) return;
+  const scale = Math.max(viewportW / mediaW, viewportH / mediaH);
+  const w = mediaW * scale;
+  const h = mediaH * scale;
+  el.style.top = `${(viewportH - h) / 2}px`;
+  el.style.left = `${(viewportW - w) / 2}px`;
+  el.style.width = `${w}px`;
+  el.style.height = `${h}px`;
+  el.style.minWidth = "0";
+  el.style.minHeight = "0";
+  el.style.transform = "none";
+}
+
 export function ScrollVideoBackground({
   src,
   poster,
 }: ScrollVideoBackgroundProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const posterRef = useRef<HTMLImageElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [useVideo, setUseVideo] = useState(false);
   /** Hide poster only after video has painted the scroll-synced frame. */
@@ -72,9 +95,35 @@ export function ScrollVideoBackground({
     setUseVideo(true);
   }, [src]);
 
+  // Keep poster cover-sized even before video is ready (same math as video).
+  useEffect(() => {
+    const root = rootRef.current;
+    const img = posterRef.current;
+    if (!root || !img || !poster) return;
+
+    const apply = () => {
+      const mw = img.naturalWidth;
+      const mh = img.naturalHeight;
+      if (!mw || !mh) return;
+      fitCover(img, mw, mh, root.clientWidth, root.clientHeight);
+    };
+
+    apply();
+    img.addEventListener("load", apply);
+    window.addEventListener("resize", apply);
+    window.visualViewport?.addEventListener("resize", apply);
+
+    return () => {
+      img.removeEventListener("load", apply);
+      window.removeEventListener("resize", apply);
+      window.visualViewport?.removeEventListener("resize", apply);
+    };
+  }, [poster]);
+
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !src || !useVideo) return;
+    const root = rootRef.current;
+    if (!video || !src || !useVideo || !root) return;
 
     setRevealed(false);
 
@@ -94,6 +143,25 @@ export function ScrollVideoBackground({
     // Slightly softer ease on phones so slow scrolls don't skip neighboring frames.
     const ease = mobile ? 0.35 : EASE;
 
+    const layoutMedia = () => {
+      const mw = video.videoWidth;
+      const mh = video.videoHeight;
+      if (!mw || !mh) return false;
+      fitCover(video, mw, mh, root.clientWidth, root.clientHeight);
+      const img = posterRef.current;
+      if (img?.naturalWidth && img.naturalHeight) {
+        // Same aspect source → identical cover crop as the video.
+        fitCover(
+          img,
+          img.naturalWidth,
+          img.naturalHeight,
+          root.clientWidth,
+          root.clientHeight,
+        );
+      }
+      return true;
+    };
+
     const scrollTarget = () => {
       if (!video.duration || !Number.isFinite(video.duration)) return 0;
       return clampTime(scrollProgress() * video.duration, video.duration);
@@ -103,10 +171,15 @@ export function ScrollVideoBackground({
 
     const revealIfNeeded = () => {
       if (disposed || painted) return;
+      if (!layoutMedia()) return;
       painted = true;
       const paint = () => {
         if (disposed) return;
-        setRevealed(true);
+        // One extra frame after layout so iOS commits the cover size before swap.
+        requestAnimationFrame(() => {
+          if (disposed) return;
+          setRevealed(true);
+        });
       };
       const rvfc = (
         video as HTMLVideoElement & {
@@ -213,10 +286,17 @@ export function ScrollVideoBackground({
       schedule();
     };
 
+    const onResize = () => {
+      layoutMedia();
+      aim = scrollTarget();
+      schedule();
+    };
+
     const markReady = () => {
       if (ready || disposed) return;
       ready = true;
       video.pause();
+      layoutMedia();
       playhead = 0;
       lastApplied = -1;
       aim = scrollTarget();
@@ -246,6 +326,7 @@ export function ScrollVideoBackground({
             video.pause();
             armed = true;
             disarmGestures();
+            layoutMedia();
             aim = scrollTarget();
             lastApplied = -1;
             apply(snapTime(aim, step, video.duration || 0));
@@ -259,6 +340,7 @@ export function ScrollVideoBackground({
         video.pause();
         armed = true;
         disarmGestures();
+        layoutMedia();
         aim = scrollTarget();
         lastApplied = -1;
         apply(snapTime(aim, step, video.duration || 0));
@@ -268,6 +350,7 @@ export function ScrollVideoBackground({
 
     const onVisibility = () => {
       if (document.hidden) return;
+      layoutMedia();
       aim = scrollTarget();
       schedule();
     };
@@ -286,9 +369,11 @@ export function ScrollVideoBackground({
     if (video.readyState >= 1) markReady();
     else video.addEventListener("loadedmetadata", markReady);
 
+    video.addEventListener("loadeddata", layoutMedia);
     video.addEventListener("seeked", finishSeek);
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
+    window.visualViewport?.addEventListener("resize", onResize);
     document.addEventListener("visibilitychange", onVisibility);
     motion.addEventListener("change", onMotion);
 
@@ -302,9 +387,11 @@ export function ScrollVideoBackground({
       disposed = true;
       if (seekWatchdog) window.clearTimeout(seekWatchdog);
       video.removeEventListener("loadedmetadata", markReady);
+      video.removeEventListener("loadeddata", layoutMedia);
       video.removeEventListener("seeked", finishSeek);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", onVisibility);
       motion.removeEventListener("change", onMotion);
       disarmGestures();
@@ -314,10 +401,11 @@ export function ScrollVideoBackground({
   }, [src, useVideo]);
 
   return (
-    <div className={styles.root} aria-hidden="true">
+    <div ref={rootRef} className={styles.root} aria-hidden="true">
       <div className={styles.fallback} />
       {poster ? (
         <img
+          ref={posterRef}
           className={`${styles.video}${revealed ? ` ${styles.posterGone}` : ""}`}
           src={poster}
           alt=""
