@@ -12,9 +12,10 @@ type NavigatorWithHints = Navigator & {
   connection?: { saveData?: boolean; effectiveType?: string };
 };
 
-const FRAME_SECONDS = 0.1;
-const EASE = 0.32;
-const SLOW_SEEK_MS = 160;
+// Matches the scrub encode (~24fps, every frame is a keyframe).
+const FRAME_SECONDS = 1 / 24;
+const EASE = 0.45;
+const SLOW_SEEK_MS = 140;
 const SEEK_WATCHDOG_MS = 900;
 
 function canUseScrollVideo() {
@@ -71,8 +72,8 @@ export function ScrollVideoBackground({
     let disposed = false;
     const seekDurations: number[] = [];
     const mobile = isCoarsePointer();
-    // Mobile eases a bit more gently so catch-up doesn't skip frames.
-    const ease = mobile ? 0.22 : EASE;
+    // Slightly softer ease on phones so slow scrolls don't skip neighboring frames.
+    const ease = mobile ? 0.35 : EASE;
 
     const scrollTarget = () => {
       if (!video.duration || !Number.isFinite(video.duration)) return 0;
@@ -103,7 +104,7 @@ export function ScrollVideoBackground({
           seekDurations.length = 0;
           if (avg >= SLOW_SEEK_MS) {
             // Cap so we never fall back to very coarse jumps.
-            step = Math.min(step * 1.5, mobile ? 0.35 : 0.5);
+            step = Math.min(step * 1.5, mobile ? 0.125 : 0.25);
           }
         }
       }
