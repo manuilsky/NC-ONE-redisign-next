@@ -1,4 +1,5 @@
 import { ContactSection } from "@/components/ContactSection";
+import { HomeScrollReset } from "@/components/HomeScrollReset";
 import { HashLink } from "@/components/HashLink";
 import { ProjectsSection } from "@/components/ProjectsSection";
 import { Reveal } from "@/components/Reveal";
@@ -10,6 +11,7 @@ import styles from "./page.module.css";
 export default function HomePage() {
   return (
     <>
+      <HomeScrollReset />
       <section className={styles.hero}>
         <div className={styles.heroInner}>
           <Reveal as="h1" className={styles.heroTitle} distance="lg">

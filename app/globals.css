@@ -111,6 +111,7 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 7rem;
   overflow-x: clip;
+  overflow-anchor: none;
 }
 
 body {
@@ -122,6 +123,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+  overflow-anchor: none;
 }
 
 a {
