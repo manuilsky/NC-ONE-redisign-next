@@ -7,6 +7,8 @@ import { projectsSection } from "@/data/home";
 import { projects } from "@/data/projects";
 import styles from "./ProjectsSection.module.css";
 
+const HOME_PROJECTS_LIMIT = 6;
+
 function TitlePart({
   chunks,
   className,
@@ -27,6 +29,8 @@ function TitlePart({
 }
 
 export function ProjectsSection() {
+  const homeProjects = projects.slice(0, HOME_PROJECTS_LIMIT);
+
   return (
     <section id="projects" className={styles.section}>
       <div className={styles.inner}>
@@ -46,7 +50,7 @@ export function ProjectsSection() {
 
         <Reveal>
           <Carousel ariaLabel="Наши проекты">
-            {projects.map((project) => (
+            {homeProjects.map((project) => (
               <PortfolioCard key={project.slug} project={project} />
             ))}
           </Carousel>
