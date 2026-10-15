@@ -17,6 +17,22 @@
 }
 
 /*
+  Poster uses real object-fit cover from the first paint.
+  The old min-width/min-height + auto size painted at intrinsic
+  resolution first, then JS fitCover jumped the crop.
+*/
+.poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+  transform: none;
+}
+
+/*
   Cover without object-fit — iOS Safari often ignores object-fit on <video>
   until decode, which looks like a small frame that then zooms up.
 */
@@ -32,7 +48,7 @@
   transform: translate(-50%, -50%);
 }
 
-/* Keep the poster visible until the scrub frame is painted (avoids mobile jump). */
+/* Video stays invisible until laid out; poster covers the screen meanwhile. */
 .videoPending {
   opacity: 0;
 }
@@ -40,6 +56,7 @@
 .posterGone {
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
 }
 
 .veil {

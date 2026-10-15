@@ -57,7 +57,7 @@ function scrollProgress() {
   return Math.min(Math.max(y / maxScroll, 0), 1);
 }
 
-/** Explicit cover box — matches poster & video on iOS (object-fit is flaky there). */
+/** Explicit cover box — iOS Safari often ignores object-fit on <video>. */
 function fitCover(
   el: HTMLElement,
   mediaW: number,
@@ -83,10 +83,9 @@ export function ScrollVideoBackground({
   poster,
 }: ScrollVideoBackgroundProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const posterRef = useRef<HTMLImageElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [useVideo, setUseVideo] = useState(false);
-  /** Hide poster only after video has painted the scroll-synced frame. */
+  /** True only after the scrub frame is laid out & painted. */
   const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
@@ -94,31 +93,6 @@ export function ScrollVideoBackground({
     if (!canUseScrollVideo()) return;
     setUseVideo(true);
   }, [src]);
-
-  // Keep poster cover-sized even before video is ready (same math as video).
-  useEffect(() => {
-    const root = rootRef.current;
-    const img = posterRef.current;
-    if (!root || !img || !poster) return;
-
-    const apply = () => {
-      const mw = img.naturalWidth;
-      const mh = img.naturalHeight;
-      if (!mw || !mh) return;
-      fitCover(img, mw, mh, root.clientWidth, root.clientHeight);
-    };
-
-    apply();
-    img.addEventListener("load", apply);
-    window.addEventListener("resize", apply);
-    window.visualViewport?.addEventListener("resize", apply);
-
-    return () => {
-      img.removeEventListener("load", apply);
-      window.removeEventListener("resize", apply);
-      window.visualViewport?.removeEventListener("resize", apply);
-    };
-  }, [poster]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -148,17 +122,6 @@ export function ScrollVideoBackground({
       const mh = video.videoHeight;
       if (!mw || !mh) return false;
       fitCover(video, mw, mh, root.clientWidth, root.clientHeight);
-      const img = posterRef.current;
-      if (img?.naturalWidth && img.naturalHeight) {
-        // Same aspect source → identical cover crop as the video.
-        fitCover(
-          img,
-          img.naturalWidth,
-          img.naturalHeight,
-          root.clientWidth,
-          root.clientHeight,
-        );
-      }
       return true;
     };
 
@@ -173,24 +136,28 @@ export function ScrollVideoBackground({
       if (disposed || painted) return;
       if (!layoutMedia()) return;
       painted = true;
-      const paint = () => {
-        if (disposed) return;
-        // One extra frame after layout so iOS commits the cover size before swap.
-        requestAnimationFrame(() => {
-          if (disposed) return;
-          setRevealed(true);
-        });
+      let finished = false;
+      const finish = () => {
+        if (disposed || finished) return;
+        finished = true;
+        layoutMedia();
+        setRevealed(true);
       };
+      const afterFrame = () => {
+        // Let WebKit commit the cover size before making video visible.
+        window.setTimeout(finish, mobile ? 48 : 0);
+      };
+      // rvfc may never fire while the video is opacity:0 — always fall back.
       const rvfc = (
         video as HTMLVideoElement & {
           requestVideoFrameCallback?: (cb: () => void) => number;
         }
       ).requestVideoFrameCallback;
       if (typeof rvfc === "function") {
-        rvfc.call(video, paint);
-      } else {
-        requestAnimationFrame(() => requestAnimationFrame(paint));
+        rvfc.call(video, afterFrame);
       }
+      requestAnimationFrame(() => requestAnimationFrame(afterFrame));
+      window.setTimeout(afterFrame, mobile ? 120 : 64);
     };
 
     const finishSeek = () => {
@@ -238,6 +205,11 @@ export function ScrollVideoBackground({
       seekStartedAt = performance.now();
 
       try {
+        // Seeking to the already-current time often skips `seeked` in Chromium.
+        if (Math.abs(video.currentTime - time) < step * 0.45) {
+          finishSeek();
+          return;
+        }
         video.currentTime = time;
       } catch {
         finishSeek();
@@ -300,7 +272,7 @@ export function ScrollVideoBackground({
       playhead = 0;
       lastApplied = -1;
       aim = scrollTarget();
-      // Seek to the current scroll frame before revealing over the poster.
+      // Seek to the current scroll frame before revealing.
       apply(snapTime(aim, step, video.duration || 0));
       schedule();
     };
@@ -366,10 +338,12 @@ export function ScrollVideoBackground({
     video.setAttribute("playsinline", "");
     video.setAttribute("webkit-playsinline", "");
 
+    const onLoadedData = () => layoutMedia();
+
     if (video.readyState >= 1) markReady();
     else video.addEventListener("loadedmetadata", markReady);
 
-    video.addEventListener("loadeddata", layoutMedia);
+    video.addEventListener("loadeddata", onLoadedData);
     video.addEventListener("seeked", finishSeek);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
@@ -387,7 +361,7 @@ export function ScrollVideoBackground({
       disposed = true;
       if (seekWatchdog) window.clearTimeout(seekWatchdog);
       video.removeEventListener("loadedmetadata", markReady);
-      video.removeEventListener("loadeddata", layoutMedia);
+      video.removeEventListener("loadeddata", onLoadedData);
       video.removeEventListener("seeked", finishSeek);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
@@ -405,11 +379,11 @@ export function ScrollVideoBackground({
       <div className={styles.fallback} />
       {poster ? (
         <img
-          ref={posterRef}
-          className={`${styles.video}${revealed ? ` ${styles.posterGone}` : ""}`}
+          className={`${styles.poster}${revealed ? ` ${styles.posterGone}` : ""}`}
           src={poster}
           alt=""
           decoding="async"
+          fetchPriority="high"
         />
       ) : null}
       {useVideo && src ? (
