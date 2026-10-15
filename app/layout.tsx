@@ -55,6 +55,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" className={body.variable}>
+      <head>
+        {SCROLL_BG_POSTER ? (
+          <link
+            rel="preload"
+            as="image"
+            href={SCROLL_BG_POSTER}
+            fetchPriority="high"
+          />
+        ) : null}
+      </head>
       <body className={body.className}>
         <Script id="home-scroll-boot" strategy="beforeInteractive">
           {homeScrollBoot}

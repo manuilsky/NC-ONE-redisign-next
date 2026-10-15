@@ -1,6 +1,12 @@
 .root {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  /* Explicit size — iOS often leaves inset:0 + % children at 0 height until scroll. */
+  width: 100%;
+  height: 100%;
+  height: 100vh;
+  height: 100dvh;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
@@ -9,7 +15,10 @@
 
 .fallback {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background:
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(47, 107, 255, 0.18), transparent 55%),
     radial-gradient(ellipse 60% 40% at 80% 60%, rgba(30, 60, 160, 0.12), transparent 50%),
@@ -17,20 +26,20 @@
 }
 
 /*
-  Poster uses real object-fit cover from the first paint.
-  Keep it above the <video> — iOS WebKit often paints pending
-  videos as an opaque black layer even with opacity: 0.
+  CSS background cover (not <img>) — reliable on iOS from first paint.
+  Sits above <video> so a pending black video layer cannot hide it.
 */
 .poster {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 2;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  object-fit: cover;
-  object-position: center;
-  transform: none;
+  background-color: #000;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /*
@@ -50,10 +59,12 @@
   transform: translate(-50%, -50%);
 }
 
-/* Hide pending video from the compositor (opacity alone is not enough on iOS). */
+/*
+  Keep opacity:0 only — visibility:hidden can block decode on iOS.
+  Poster z-index covers any black video compositor layer.
+*/
 .videoPending {
   opacity: 0;
-  visibility: hidden;
 }
 
 .posterGone {
@@ -64,7 +75,10 @@
 
 .veil {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 3;
   background:
     linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.72) 100%);

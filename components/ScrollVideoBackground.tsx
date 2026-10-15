@@ -253,30 +253,6 @@ export function ScrollVideoBackground({
       raf = window.requestAnimationFrame(tick);
     };
 
-    const onScroll = () => {
-      aim = scrollTarget();
-      schedule();
-    };
-
-    const onResize = () => {
-      layoutMedia();
-      aim = scrollTarget();
-      schedule();
-    };
-
-    const markReady = () => {
-      if (ready || disposed) return;
-      ready = true;
-      video.pause();
-      layoutMedia();
-      playhead = 0;
-      lastApplied = -1;
-      aim = scrollTarget();
-      // Seek to the current scroll frame before revealing.
-      apply(snapTime(aim, step, video.duration || 0));
-      schedule();
-    };
-
     let armed = false;
     let arming = false;
 
@@ -318,6 +294,32 @@ export function ScrollVideoBackground({
         apply(snapTime(aim, step, video.duration || 0));
         schedule();
       }
+    };
+
+    const onScroll = () => {
+      // First scroll often unlocks media on iOS Chrome when autoplay arm failed.
+      armDecoder();
+      aim = scrollTarget();
+      schedule();
+    };
+
+    const onResize = () => {
+      layoutMedia();
+      aim = scrollTarget();
+      schedule();
+    };
+
+    const markReady = () => {
+      if (ready || disposed) return;
+      ready = true;
+      video.pause();
+      layoutMedia();
+      playhead = 0;
+      lastApplied = -1;
+      aim = scrollTarget();
+      // Seek to the current scroll frame before revealing.
+      apply(snapTime(aim, step, video.duration || 0));
+      schedule();
     };
 
     const onVisibility = () => {
@@ -378,12 +380,9 @@ export function ScrollVideoBackground({
     <div ref={rootRef} className={styles.root} aria-hidden="true">
       <div className={styles.fallback} />
       {poster ? (
-        <img
+        <div
           className={`${styles.poster}${revealed ? ` ${styles.posterGone}` : ""}`}
-          src={poster}
-          alt=""
-          decoding="async"
-          fetchPriority="high"
+          style={{ backgroundImage: `url(${JSON.stringify(poster)})` }}
         />
       ) : null}
       {useVideo && src ? (
