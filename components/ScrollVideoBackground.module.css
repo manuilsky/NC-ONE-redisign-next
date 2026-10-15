@@ -18,12 +18,13 @@
 
 /*
   Poster uses real object-fit cover from the first paint.
-  The old min-width/min-height + auto size painted at intrinsic
-  resolution first, then JS fitCover jumped the crop.
+  Keep it above the <video> — iOS WebKit often paints pending
+  videos as an opaque black layer even with opacity: 0.
 */
 .poster {
   position: absolute;
   inset: 0;
+  z-index: 2;
   width: 100%;
   height: 100%;
   max-width: none;
@@ -40,6 +41,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
+  z-index: 1;
   width: auto;
   height: auto;
   max-width: none;
@@ -48,9 +50,10 @@
   transform: translate(-50%, -50%);
 }
 
-/* Video stays invisible until laid out; poster covers the screen meanwhile. */
+/* Hide pending video from the compositor (opacity alone is not enough on iOS). */
 .videoPending {
   opacity: 0;
+  visibility: hidden;
 }
 
 .posterGone {
@@ -62,6 +65,7 @@
 .veil {
   position: absolute;
   inset: 0;
+  z-index: 3;
   background:
     linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.72) 100%);
 }
