@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import styles from "./ScrollVideoBackground.module.css";
 
 type ScrollVideoBackgroundProps = {
@@ -85,7 +86,9 @@ export function ScrollVideoBackground({
   const rootRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [useVideo, setUseVideo] = useState(false);
-  /** True only after the scrub frame is laid out & painted. */
+  /** Video composited under poster (opacity 1) but poster still covers it. */
+  const [videoShown, setVideoShown] = useState(false);
+  /** True only after decoded data is ready — then poster may hide. */
   const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
@@ -99,6 +102,7 @@ export function ScrollVideoBackground({
     const root = rootRef.current;
     if (!video || !src || !useVideo || !root) return;
 
+    setVideoShown(false);
     setRevealed(false);
 
     let ready = false;
@@ -111,17 +115,37 @@ export function ScrollVideoBackground({
     let seekStartedAt = 0;
     let seekWatchdog = 0;
     let disposed = false;
-    let painted = false;
+    let phase1 = false;
+    let revealedDone = false;
+    // Lock cover box so iOS chrome show/hide cannot reflow the video (looks like zoom).
+    let coverW = 0;
+    let coverH = 0;
     const seekDurations: number[] = [];
     const mobile = isCoarsePointer();
     // Slightly softer ease on phones so slow scrolls don't skip neighboring frames.
     const ease = mobile ? 0.35 : EASE;
 
-    const layoutMedia = () => {
+    const ensureCoverLock = (allowWidthRetarget = false) => {
+      const w = root.clientWidth;
+      const h = root.clientHeight;
+      if (!coverW || !coverH) {
+        coverW = w;
+        coverH = h;
+        return;
+      }
+      // Orientation / real layout change only — ignore chrome height jitter.
+      if (allowWidthRetarget && Math.abs(w - coverW) > 40) {
+        coverW = w;
+        coverH = h;
+      }
+    };
+
+    const layoutMedia = (allowWidthRetarget = false) => {
       const mw = video.videoWidth;
       const mh = video.videoHeight;
       if (!mw || !mh) return false;
-      fitCover(video, mw, mh, root.clientWidth, root.clientHeight);
+      ensureCoverLock(allowWidthRetarget);
+      fitCover(video, mw, mh, coverW, coverH);
       return true;
     };
 
@@ -132,32 +156,36 @@ export function ScrollVideoBackground({
 
     const endTime = () => clampTime(video.duration || 0, video.duration || 0);
 
-    const revealIfNeeded = () => {
-      if (disposed || painted) return;
+    /** Hide poster only when the video has current decoded data (readyState >= 2). */
+    const tryHidePoster = () => {
+      if (disposed || revealedDone) return;
+      if (video.readyState < 2) return;
       if (!layoutMedia()) return;
-      painted = true;
-      let finished = false;
-      const finish = () => {
-        if (disposed || finished) return;
-        finished = true;
-        layoutMedia();
-        setRevealed(true);
-      };
-      const afterFrame = () => {
-        // Let WebKit commit the cover size before making video visible.
-        window.setTimeout(finish, mobile ? 48 : 0);
-      };
-      // rvfc may never fire while the video is opacity:0 — always fall back.
+      revealedDone = true;
+      setRevealed(true);
+    };
+
+    const revealIfNeeded = () => {
+      if (disposed || revealedDone) return;
+      if (!layoutMedia()) return;
+
+      // Phase 1: video under poster; poster stays visible until readyState >= 2.
+      if (!phase1) {
+        phase1 = true;
+        flushSync(() => {
+          setVideoShown(true);
+        });
+      }
+
       const rvfc = (
         video as HTMLVideoElement & {
           requestVideoFrameCallback?: (cb: () => void) => number;
         }
       ).requestVideoFrameCallback;
-      if (typeof rvfc === "function") {
-        rvfc.call(video, afterFrame);
+      if (typeof rvfc === "function" && video.readyState >= 2) {
+        rvfc.call(video, () => tryHidePoster());
       }
-      requestAnimationFrame(() => requestAnimationFrame(afterFrame));
-      window.setTimeout(afterFrame, mobile ? 120 : 64);
+      tryHidePoster();
     };
 
     const finishSeek = () => {
@@ -279,6 +307,7 @@ export function ScrollVideoBackground({
             lastApplied = -1;
             apply(snapTime(aim, step, video.duration || 0));
             schedule();
+            tryHidePoster();
           })
           .catch(() => {
             arming = false;
@@ -293,6 +322,7 @@ export function ScrollVideoBackground({
         lastApplied = -1;
         apply(snapTime(aim, step, video.duration || 0));
         schedule();
+        tryHidePoster();
       }
     };
 
@@ -304,7 +334,7 @@ export function ScrollVideoBackground({
     };
 
     const onResize = () => {
-      layoutMedia();
+      layoutMedia(true);
       aim = scrollTarget();
       schedule();
     };
@@ -340,12 +370,17 @@ export function ScrollVideoBackground({
     video.setAttribute("playsinline", "");
     video.setAttribute("webkit-playsinline", "");
 
-    const onLoadedData = () => layoutMedia();
+    const onLoadedData = () => {
+      layoutMedia();
+      tryHidePoster();
+    };
+    const onCanPlay = () => tryHidePoster();
 
     if (video.readyState >= 1) markReady();
     else video.addEventListener("loadedmetadata", markReady);
 
     video.addEventListener("loadeddata", onLoadedData);
+    video.addEventListener("canplay", onCanPlay);
     video.addEventListener("seeked", finishSeek);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
@@ -364,6 +399,7 @@ export function ScrollVideoBackground({
       if (seekWatchdog) window.clearTimeout(seekWatchdog);
       video.removeEventListener("loadedmetadata", markReady);
       video.removeEventListener("loadeddata", onLoadedData);
+      video.removeEventListener("canplay", onCanPlay);
       video.removeEventListener("seeked", finishSeek);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
@@ -388,7 +424,7 @@ export function ScrollVideoBackground({
       {useVideo && src ? (
         <video
           ref={videoRef}
-          className={`${styles.video}${revealed ? "" : ` ${styles.videoPending}`}`}
+          className={`${styles.video}${videoShown ? "" : ` ${styles.videoPending}`}`}
           src={src}
           muted
           playsInline

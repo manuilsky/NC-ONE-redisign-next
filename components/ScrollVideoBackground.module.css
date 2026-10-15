@@ -26,8 +26,8 @@
 }
 
 /*
-  CSS background cover (not <img>) — reliable on iOS from first paint.
-  Sits above <video> so a pending black video layer cannot hide it.
+  Poster fills the same box as the video cover target.
+  background-size: cover matches JS fitCover for the same aspect media.
 */
 .poster {
   position: absolute;
@@ -43,20 +43,21 @@
 }
 
 /*
-  Cover without object-fit — iOS Safari often ignores object-fit on <video>
-  until decode, which looks like a small frame that then zooms up.
+  Cover sizing is applied by JS fitCover (iOS often ignores object-fit on <video>).
+  Do NOT use min-width/min-height auto-cover here — that paints a different crop
+  until fitCover runs and looks like a zoom when scrub/arm starts.
 */
 .video {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 0;
+  left: 0;
   z-index: 1;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   max-width: none;
-  min-width: 100%;
-  min-height: 100%;
-  transform: translate(-50%, -50%);
+  object-fit: cover;
+  object-position: center;
+  transform: none;
 }
 
 /*
