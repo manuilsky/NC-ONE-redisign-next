@@ -1,0 +1,13 @@
+.root {
+  opacity: var(--hero-fade, 1);
+  transform: translate3d(0, var(--hero-lift, 0rem), 0);
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto;
+  }
+}

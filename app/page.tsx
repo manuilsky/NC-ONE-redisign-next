@@ -1,4 +1,5 @@
 import { ContactSection } from "@/components/ContactSection";
+import { HeroScrollFade } from "@/components/HeroScrollFade";
 import { HomeScrollReset } from "@/components/HomeScrollReset";
 import { HashLink } from "@/components/HashLink";
 import { ProjectsSection } from "@/components/ProjectsSection";
@@ -13,7 +14,7 @@ export default function HomePage() {
     <>
       <HomeScrollReset />
       <section className={styles.hero}>
-        <div className={styles.heroInner}>
+        <HeroScrollFade className={styles.heroInner}>
           <Reveal as="h1" className={styles.heroTitle} distance="lg">
             {hero.titleLines.map((line, i) => (
               <span
@@ -35,7 +36,7 @@ export default function HomePage() {
           <Reveal as="p" className={styles.scrollHint} delay={280}>
             {hero.scrollHint}
           </Reveal>
-        </div>
+        </HeroScrollFade>
       </section>
 
       <section id="about" className={styles.about}>
