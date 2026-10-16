@@ -2,11 +2,17 @@
   position: fixed;
   top: 0;
   left: 0;
-  /* Explicit size — iOS often leaves inset:0 + % children at 0 height until scroll. */
   width: 100%;
-  height: 100%;
+  /*
+    Large viewport height — not 100dvh.
+    On iOS/Android, scrolling down collapses browser chrome and the visual
+    viewport grows. 100dvh tracks the short/dynamic size; with position:fixed
+    that often leaves a body-colored gap under the layer (black bar).
+    100vh (legacy iOS large vh) / 100lvh stay at the chrome-hidden size so the
+    background always covers. Video cover box stays JS-locked to avoid reflow zoom.
+  */
   height: 100vh;
-  height: 100dvh;
+  height: 100lvh;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;

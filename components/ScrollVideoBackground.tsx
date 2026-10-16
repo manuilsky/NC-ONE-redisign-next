@@ -127,7 +127,10 @@ export function ScrollVideoBackground({
 
     const ensureCoverLock = (allowWidthRetarget = false) => {
       const w = root.clientWidth;
-      const h = root.clientHeight;
+      // Prefer the large shell (lvh / innerHeight) so the first lock is not stuck
+      // to a chrome-visible short viewport — that short lock + scroll-down chrome
+      // collapse is what left a black gap under the fixed layer on iPhone.
+      const h = Math.max(root.clientHeight, window.innerHeight);
       if (!coverW || !coverH) {
         coverW = w;
         coverH = h;
