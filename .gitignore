@@ -22,6 +22,7 @@
 .DS_Store
 *.pem
 .cursor/
+.tmp-api-excluded/
 
 # debug
 npm-debug.log*
