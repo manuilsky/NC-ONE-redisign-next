@@ -25,8 +25,8 @@
 }
 
 .logoImage {
-  width: auto;
-  height: 2.5rem;
+  width: 3.3125rem; /* 53 */
+  height: 2.0625rem; /* 33 */
   object-fit: contain;
 }
 
@@ -123,16 +123,18 @@
   }
 
   .logoImage {
-    width: auto;
-    height: 2rem;
-    max-width: 5.9375rem;
+    width: 3.3125rem; /* 53 */
+    height: 2.0625rem; /* 33 */
+    max-width: 3.3125rem;
+    object-fit: contain;
   }
 
   .mobileMenu {
     display: none;
     flex-direction: column;
     gap: 2rem;
-    padding: 1rem 1rem 2rem;
+    /* Same top/side padding as .inner → logo stays put when menu opens */
+    padding: 1rem 1.5rem 2rem;
     background: #05060a;
   }
 
@@ -153,17 +155,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    /* UI Kit Top Row: 40 */
     min-height: 2.5rem;
-  }
-
-  .mobileBrand {
-    color: var(--text);
-    font-family: var(--font-display-medium), var(--font-display), sans-serif;
-    font-size: 1.5rem;
-    font-weight: 400;
-    font-synthesis: none;
-    line-height: 1.375;
-    letter-spacing: 0;
+    height: 2.5rem;
   }
 
   .mobileNav {
@@ -204,5 +198,9 @@
   .inner {
     width: 100%;
     padding: 1rem;
+  }
+
+  .mobileMenu {
+    padding: 1rem 1rem 2rem;
   }
 }

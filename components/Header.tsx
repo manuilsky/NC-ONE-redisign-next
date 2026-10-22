@@ -15,6 +15,19 @@ const links = [
   { href: "/#contact", label: "контакты" },
 ];
 
+function LogoMark({ priority = false }: { priority?: boolean }) {
+  return (
+    <Image
+      src={withBasePath("/logo.svg")}
+      alt="НК 1 — новая компания один"
+      width={70}
+      height={17}
+      className={styles.logoImage}
+      priority={priority}
+    />
+  );
+}
+
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -75,11 +88,11 @@ export function Header() {
         <div className={styles.mobileTop}>
           <Link
             href="/"
-            className={styles.mobileBrand}
+            className={styles.logo}
             aria-label="НК 1 — на главную"
             onClick={closeMenu}
           >
-            НК1
+            <LogoMark />
           </Link>
           <button
             type="button"
@@ -128,14 +141,7 @@ export function Header() {
     <header className={styles.header}>
       <div className={styles.inner}>
         <Link href="/" className={styles.logo} aria-label="НК 1 — на главную">
-          <Image
-            src={withBasePath("/logo.png")}
-            alt="НК 1 — новая компания один"
-            width={300}
-            height={101}
-            className={styles.logoImage}
-            priority
-          />
+          <LogoMark priority />
         </Link>
 
         <nav className={styles.nav} aria-label="Основная навигация">
