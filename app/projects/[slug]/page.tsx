@@ -54,9 +54,17 @@ export async function generateMetadata({
     return { title: "Проект не найден" };
   }
 
+  const keywords = project.seoCluster
+    ? project.seoCluster
+        .split(/\s*→\s*/)
+        .map((part) => part.trim())
+        .filter(Boolean)
+    : undefined;
+
   return {
     title: project.seoTitle || project.title,
     description: project.seoDescription || project.desc,
+    ...(keywords?.length ? { keywords } : {}),
   };
 }
 
@@ -99,8 +107,34 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       ? `Нужна разработка ${project.type}?`
       : "Готовы обсудить похожий проект?";
 
+  const seoJsonLd =
+    project.seoHeading || project.seoCluster
+      ? {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: project.seoHeading || project.seoTitle || project.title,
+          description: project.seoDescription || project.desc,
+          name: project.title,
+          ...(project.seoCluster
+            ? {
+                keywords: project.seoCluster
+                  .split(/\s*→\s*/)
+                  .map((part) => part.trim())
+                  .filter(Boolean)
+                  .join(", "),
+              }
+            : {}),
+        }
+      : null;
+
   return (
     <article className={styles.page}>
+      {seoJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(seoJsonLd) }}
+        />
+      ) : null}
       <StarfieldTunnel />
       <section className={styles.hero}>
         <div className="container">
@@ -249,7 +283,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <ul className={styles.gallery}>
             {Array.from({ length: 3 }, (_, shot) => (
               <li key={shot}>
-                <span>{mark}</span>
+                <span
+                  role={project.imageAlts?.[shot] ? "img" : undefined}
+                  aria-label={project.imageAlts?.[shot]}
+                >
+                  {mark}
+                </span>
               </li>
             ))}
           </ul>
@@ -292,6 +331,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </Link>
         </div>
       </section>
+
+      {project.seoHeading || project.seoCluster ? (
+        <section className={styles.seoOnly}>
+          {project.seoHeading ? <h2>{project.seoHeading}</h2> : null}
+          {project.seoCluster ? <p>{project.seoCluster}</p> : null}
+          {project.imageAlts?.length ? (
+            <ul>
+              {project.imageAlts.map((alt) => (
+                <li key={alt}>{alt}</li>
+              ))}
+            </ul>
+          ) : null}
+        </section>
+      ) : null}
     </article>
   );
 }
