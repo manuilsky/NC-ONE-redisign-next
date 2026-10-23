@@ -4,6 +4,7 @@ import { ContactSection } from "@/components/ContactSection";
 import { IconBack } from "@/components/CaseIcons";
 import { ProjectsCatalog } from "@/components/ProjectsCatalog";
 import { StarfieldTunnel } from "@/components/StarfieldTunnel";
+import { finalCta } from "@/data/home";
 import { projects } from "@/data/projects";
 import styles from "./page.module.css";
 
@@ -31,7 +32,10 @@ export default function ProjectsPage() {
           <ProjectsCatalog projects={projects} />
         </div>
       </section>
-      <ContactSection />
+      <ContactSection
+        titleLines={finalCta.projectsTitleLines}
+        accentLineIndexes={finalCta.projectsAccentLineIndexes}
+      />
     </>
   );
 }

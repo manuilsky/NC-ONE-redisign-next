@@ -4,7 +4,15 @@ import { finalCta } from "@/data/home";
 import { withBasePath } from "@/lib/paths";
 import styles from "./ContactSection.module.css";
 
-export function ContactSection() {
+type ContactSectionProps = {
+  titleLines?: readonly string[];
+  accentLineIndexes?: readonly number[];
+};
+
+export function ContactSection({
+  titleLines = finalCta.titleLines,
+  accentLineIndexes = finalCta.accentLineIndexes,
+}: ContactSectionProps = {}) {
   return (
     <section id="contact" className={styles.section}>
       <div className={styles.inner}>
@@ -12,13 +20,11 @@ export function ContactSection() {
           {finalCta.label}
         </Reveal>
         <Reveal as="h2" className={styles.title} distance="lg" delay={80}>
-          {finalCta.titleLines.map((line, i) => (
+          {titleLines.map((line, i) => (
             <span
               key={line}
               className={
-                (finalCta.accentLineIndexes as readonly number[]).includes(i)
-                  ? styles.titleAccent
-                  : undefined
+                accentLineIndexes.includes(i) ? styles.titleAccent : undefined
               }
             >
               {line}

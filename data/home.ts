@@ -249,6 +249,8 @@ export const finalCta = {
   label: "[ свяжитесь с нами ]",
   titleLines: ["Готовы", "запустить", "ваш проект?"] as const,
   accentLineIndexes: [1] as const,
+  projectsTitleLines: ["Превратим", "вашу идею", "в продукт"] as const,
+  projectsAccentLineIndexes: [1] as const,
   text: "Расскажите о задаче — составим уникальное предложение и подберём оптимальный бюджет.",
   phone: "+7 916 945 7964",
   phoneHref: "tel:+79169457964",
