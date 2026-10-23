@@ -76,6 +76,33 @@ function splitParagraphs(text: string) {
   return text.split(/\n\n+/).filter(Boolean);
 }
 
+/** Рендерит текст с инлайн-ссылками вида [анкор](/projects/slug) */
+function renderLinkedText(text: string): ReactNode {
+  const pattern = /\[([^\]]+)\]\((\/projects\/[^)]+)\)/g;
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    parts.push(
+      <Link key={`link-${key++}`} href={match[2]} className={styles.inlineLink}>
+        {match[1]}
+      </Link>,
+    );
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+}
+
 const FACT_ORDER: CaseFact["icon"][] = [
   "platform",
   "team",
@@ -100,6 +127,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { index, total, next } = getProjectPosition(slug);
   const mark = getProjectMark(project);
   const nextMark = getProjectMark(next);
+  const related = project.relatedCase
+    ? getProjectBySlug(project.relatedCase.slug)
+    : undefined;
+  const relatedMark = related ? getProjectMark(related) : null;
   const categoryLabel = getCategoryLabel(project.categories[0] ?? "all");
   const ctaTitle = project.ctaTitle
     ? project.ctaTitle
@@ -154,7 +185,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             <div className={styles.copy}>
               <p className={styles.subtitle}>{project.subtitle}</p>
               <h1 className={styles.title}>{project.title}</h1>
-              <p className={styles.lead}>{project.desc}</p>
+              <p className={styles.lead}>{renderLinkedText(project.desc)}</p>
 
               <dl className={styles.facts}>
                 {orderFacts(project.facts).map((fact) => (
@@ -213,7 +244,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <IconTask />
             </span>
             <h2>Задача</h2>
-            <p>{project.problem}</p>
+            <p>{renderLinkedText(project.problem)}</p>
           </article>
         </div>
       </section>
@@ -228,8 +259,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   <IconCheck />
                 </span>
                 <div>
-                  <h3>{item.title}</h3>
-                  <p>{item.desc}</p>
+                  <h3>{renderLinkedText(item.title)}</h3>
+                  <p>{renderLinkedText(item.desc)}</p>
                 </div>
               </li>
             ))}
@@ -242,12 +273,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <article className={styles.solutionCard}>
             <p className={styles.label}>[ решение ]</p>
             <ul className={styles.solutionList}>
-              {project.solutionPoints.map((item) => (
-                <li key={item}>
+              {project.solutionPoints.map((item, i) => (
+                <li key={i}>
                   <span className={`${styles.check} ${styles.checkSm}`}>
                     <IconCheck />
                   </span>
-                  <p>{item}</p>
+                  <p>{renderLinkedText(item)}</p>
                 </li>
               ))}
             </ul>
@@ -270,7 +301,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             ) : null}
             {splitParagraphs(project.resultsSummary).map((paragraph) => (
               <p key={paragraph} className={styles.resultNote}>
-                {paragraph}
+                {renderLinkedText(paragraph)}
               </p>
             ))}
           </article>
@@ -315,20 +346,41 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             Все проекты <span aria-hidden="true">→</span>
           </Link>
 
-          <Link
-            href={`/projects/${next.slug}`}
-            className={styles.next}
-            aria-label={`Следующий кейс: ${next.title}`}
-          >
-            <span className={styles.nextText}>
-              <span className={styles.label}>[ следующий проект ]</span>
-              <span className={styles.nextTitle}>{next.title}</span>
-            </span>
-            <span className={styles.nextMark} aria-hidden="true">
-              {nextMark}
-            </span>
-            <IconArrow className={styles.nextArrow} />
-          </Link>
+          {related && project.relatedCase ? (
+            <Link
+              href={`/projects/${related.slug}`}
+              className={styles.next}
+              aria-label={`${project.relatedCase.label}: ${related.title}`}
+            >
+              <span className={styles.nextText}>
+                <span className={styles.label}>
+                  [ {project.relatedCase.label.toLowerCase()} ]
+                </span>
+                <span className={styles.nextTitle}>{related.title}</span>
+              </span>
+              <span className={styles.nextMark} aria-hidden="true">
+                {relatedMark}
+              </span>
+              <IconArrow className={styles.nextArrow} />
+            </Link>
+          ) : null}
+
+          {!related || next.slug !== related.slug ? (
+            <Link
+              href={`/projects/${next.slug}`}
+              className={styles.next}
+              aria-label={`Следующий кейс: ${next.title}`}
+            >
+              <span className={styles.nextText}>
+                <span className={styles.label}>[ следующий проект ]</span>
+                <span className={styles.nextTitle}>{next.title}</span>
+              </span>
+              <span className={styles.nextMark} aria-hidden="true">
+                {nextMark}
+              </span>
+              <IconArrow className={styles.nextArrow} />
+            </Link>
+          ) : null}
         </div>
       </section>
 

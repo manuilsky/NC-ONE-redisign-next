@@ -361,6 +361,20 @@
   white-space: pre-line;
 }
 
+.inlineLink {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: rgba(130, 165, 255, 0.55);
+  text-underline-offset: 0.2em;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.inlineLink:hover,
+.inlineLink:focus-visible {
+  color: #9eb6ff;
+  text-decoration-color: rgba(158, 182, 255, 0.9);
+}
+
 .highlights {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
