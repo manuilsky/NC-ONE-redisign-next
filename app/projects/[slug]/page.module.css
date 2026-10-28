@@ -490,9 +490,11 @@
 }
 
 .gallery li {
+  position: relative;
   display: grid;
   place-items: center;
   aspect-ratio: 400 / 245;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1rem;
   background: linear-gradient(
@@ -507,6 +509,10 @@
   font-weight: var(--font-weight-heading);
   font-synthesis: none;
   line-height: 1;
+}
+
+.galleryImg {
+  object-fit: cover;
 }
 
 .closing {

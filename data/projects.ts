@@ -57,7 +57,10 @@ export type Project = {
     label: string;
   };
   link?: string;
+  /** Обложка: карусель на главной + верхний слот на странице кейса */
   cover?: string;
+  /** Три скриншота ниже по странице кейса */
+  shots?: [string, string, string];
 };
 
 export const workCategories: WorkCategory[] = [
@@ -159,6 +162,12 @@ export const projects: Project[] = [
       "AI-сканер Computer Vision в мобильном приложении для клиники",
       "Профиль родителя с аналитикой прогресса в приложении для iOS и Android",
       "Админ-панель управления контентом и игровой экономикой приложения",
+    ],
+    cover: "/projects/novakids/cover.png",
+    shots: [
+      "/projects/novakids/shot-1.jpg",
+      "/projects/novakids/shot-2.png",
+      "/projects/novakids/shot-3.jpg",
     ],
   },
   {

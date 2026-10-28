@@ -48,8 +48,19 @@
   user-select: none;
 }
 
-.cover {
+/* Размытый фон заполняет квадратный слот; поверх — баннер целиком */
+.coverBg {
   object-fit: cover;
+  object-position: center;
+  filter: blur(1.25rem);
+  transform: scale(1.2);
+  opacity: 0.9;
+}
+
+.cover {
+  object-fit: contain;
+  object-position: center;
+  z-index: 1;
 }
 
 .info {

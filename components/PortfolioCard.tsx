@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
 import type { Project } from "@/data/projects";
 import { getProjectMark } from "@/data/projects";
+import { withBasePath } from "@/lib/paths";
 import styles from "./PortfolioCard.module.css";
 
 type PortfolioCardProps = {
@@ -117,13 +118,23 @@ export function PortfolioCard({ project }: PortfolioCardProps) {
     >
       <div className={styles.media}>
         {hasCover && project.cover ? (
-          <Image
-            src={project.cover}
-            alt=""
-            fill
-            sizes="400px"
-            className={styles.cover}
-          />
+          <>
+            <Image
+              src={withBasePath(project.cover)}
+              alt=""
+              fill
+              sizes="400px"
+              className={styles.coverBg}
+              aria-hidden="true"
+            />
+            <Image
+              src={withBasePath(project.cover)}
+              alt={project.imageAlts?.[0] ?? ""}
+              fill
+              sizes="400px"
+              className={styles.cover}
+            />
+          </>
         ) : (
           <>
             <span className={styles.glow} aria-hidden="true" />

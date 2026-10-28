@@ -27,6 +27,7 @@ import {
   type CaseFact,
   type Project,
 } from "@/data/projects";
+import { withBasePath } from "@/lib/paths";
 import styles from "./page.module.css";
 
 type ProjectPageProps = {
@@ -312,16 +313,30 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <div className="container">
           <p className={styles.label}>[ скриншоты ]</p>
           <ul className={styles.gallery}>
-            {Array.from({ length: 3 }, (_, shot) => (
-              <li key={shot}>
-                <span
-                  role={project.imageAlts?.[shot] ? "img" : undefined}
-                  aria-label={project.imageAlts?.[shot]}
-                >
-                  {mark}
-                </span>
-              </li>
-            ))}
+            {Array.from({ length: 3 }, (_, shot) => {
+              const src = project.shots?.[shot];
+              const alt = project.imageAlts?.[shot + 1] ?? "";
+              return (
+                <li key={shot}>
+                  {src ? (
+                    <Image
+                      src={withBasePath(src)}
+                      alt={alt}
+                      fill
+                      sizes="(max-width: 900px) 100vw, 33vw"
+                      className={styles.galleryImg}
+                    />
+                  ) : (
+                    <span
+                      role={alt ? "img" : undefined}
+                      aria-label={alt || undefined}
+                    >
+                      {mark}
+                    </span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </section>
@@ -412,7 +427,13 @@ function DeviceMock({ project }: { project: Project }) {
         </div>
         <div className={styles.mockScreen}>
           {project.cover ? (
-            <Image src={project.cover} alt="" fill sizes="440px" />
+            <Image
+              src={withBasePath(project.cover)}
+              alt={project.imageAlts?.[0] ?? ""}
+              fill
+              sizes="440px"
+              priority
+            />
           ) : (
             <span>Screenshot</span>
           )}
