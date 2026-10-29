@@ -4,6 +4,7 @@ import Link from "next/link";
 import { IconArrowUpRight } from "@/components/CaseIcons";
 import { ScrambleText } from "@/components/ScrambleText";
 import type { Project } from "@/data/projects";
+import { stripProjectLinks } from "@/data/projects";
 import styles from "./ProjectCard.module.css";
 
 type ProjectCardProps = {
@@ -33,7 +34,9 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         <IconArrowUpRight className={styles.arrow} />
       </div>
       <div className={styles.meta}>
-        <p className={styles.description}>{project.desc}</p>
+        <p className={styles.description}>
+          {stripProjectLinks(project.desc)}
+        </p>
         <div className={styles.tags}>
           {visibleTags.map((tag) => (
             <span key={tag} className={styles.tag}>

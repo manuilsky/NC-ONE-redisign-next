@@ -24,6 +24,7 @@ import {
   getProjectMark,
   getProjectPosition,
   projects,
+  stripProjectLinks,
   type CaseFact,
   type Project,
 } from "@/data/projects";
@@ -64,7 +65,8 @@ export async function generateMetadata({
 
   return {
     title: project.seoTitle || project.title,
-    description: project.seoDescription || project.desc,
+    description:
+      project.seoDescription || stripProjectLinks(project.desc),
     ...(keywords?.length ? { keywords } : {}),
   };
 }
@@ -145,7 +147,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           "@context": "https://schema.org",
           "@type": "Article",
           headline: project.seoHeading || project.seoTitle || project.title,
-          description: project.seoDescription || project.desc,
+          description:
+            project.seoDescription || stripProjectLinks(project.desc),
           name: project.title,
           ...(project.seoCluster
             ? {
