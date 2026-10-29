@@ -349,7 +349,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className={styles.cta}>
             <p className={styles.label}>[ следующий шаг ]</p>
             <h2>{ctaTitle}</h2>
-            <p className={styles.ctaText}>{project.ctaText}</p>
+            <p className={styles.ctaText}>{renderLinkedText(project.ctaText)}</p>
             <ul className={styles.chips}>
               {caseCtaChips.map((chip) => (
                 <li key={chip}>{chip}</li>
