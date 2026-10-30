@@ -648,7 +648,7 @@
   .solutionGrid,
   .highlights,
   .gallery {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .heroGrid {
@@ -659,6 +659,7 @@
   .copy,
   .lead {
     max-width: none;
+    min-width: 0;
   }
 
   .title {
@@ -681,17 +682,18 @@
     height: 3.25rem;
   }
 
-  /* Visual 720×220 clips Device Mockup 440×275 centered (140, −27.5) */
+  /* Visual clips Device Mockup 440×275; wrap stays within container, mock is cropped */
   .mockWrap {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-width: none;
+    max-width: 27.5rem;
+    min-width: 0;
     height: 13.75rem;
     overflow: hidden;
     border-radius: 1rem;
-    justify-self: stretch;
+    justify-self: center;
   }
 
   .mock {
@@ -790,11 +792,6 @@
   .stats {
     grid-template-columns: 1fr;
     gap: 1.25rem;
-  }
-
-  /* Visual 343×220 clips Device Mockup 440×275 centered (−48.5, −27.5) */
-  .mock {
-    width: calc(100% * 440 / 343);
   }
 
   .gallery li {

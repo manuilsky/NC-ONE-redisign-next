@@ -258,6 +258,13 @@ export const projects: Project[] = [
       "Связка AI и E-commerce: персональные рекомендации товаров с добавлением в корзину",
       "Адаптивный интерфейс AI-сервиса на мобильных устройствах и десктопе",
     ],
+    preview: "/projects/ai-beauty-advisor/preview.png",
+    cover: "/projects/ai-beauty-advisor/cover.jpg",
+    shots: [
+      "/projects/ai-beauty-advisor/shot-1.png",
+      "/projects/ai-beauty-advisor/shot-2.png",
+      "/projects/ai-beauty-advisor/shot-3.png",
+    ],
   },
   {
     slug: "wb-cabinet",
@@ -341,6 +348,13 @@ export const projects: Project[] = [
       "Аналитика продаж Wildberries по периодам в интерактивном календаре",
       "Интерфейс SaaS-сервиса для управления кабинетами Wildberries",
       "Таблица аналитики товаров и продаж Wildberries",
+    ],
+    preview: "/projects/wb-cabinet/preview.png",
+    cover: "/projects/wb-cabinet/cover.png",
+    shots: [
+      "/projects/wb-cabinet/shot-1.png",
+      "/projects/wb-cabinet/shot-2.png",
+      "/projects/wb-cabinet/shot-3.png",
     ],
   },
   {
