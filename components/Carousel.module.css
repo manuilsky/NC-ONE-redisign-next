@@ -73,14 +73,14 @@
   background: var(--accent);
 }
 
-/* Tablet: 768–1200 — Figma Tablet (768) — 2 cards visible */
+/* Tablet: 768–1200 — Figma Tablet (768) */
 @media (max-width: 1200px) {
   .track {
     gap: 1.5rem;
   }
 
   .slide {
-    flex: 0 0 calc((100% - 1.5rem) / 2);
+    flex: 0 0 21.75rem; /* 348px */
   }
 }
 
@@ -91,6 +91,6 @@
   }
 
   .slide {
-    flex: 0 0 100%;
+    flex: 0 0 21.4375rem; /* 343px */
   }
 }

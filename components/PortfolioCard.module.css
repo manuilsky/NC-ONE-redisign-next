@@ -48,7 +48,6 @@
   user-select: none;
 }
 
-/* Размытый фон заполняет квадратный слот; поверх — баннер целиком */
 .coverBg {
   object-fit: cover;
   object-position: center;
@@ -58,7 +57,7 @@
 }
 
 .cover {
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   z-index: 1;
 }
@@ -169,8 +168,9 @@
   }
 
   .media {
-    flex-basis: 25rem;
-    height: 25rem;
+    flex-basis: 21.75rem; /* 348px */
+    width: 21.75rem;
+    height: 21.75rem;
   }
 
   .title {
@@ -190,6 +190,12 @@
 
 /* Mobile: 375–767 — Figma Mobile (375) */
 @media (max-width: 767px) {
+  .media {
+    flex-basis: 21.4375rem; /* 343px */
+    width: 21.4375rem;
+    height: 21.4375rem;
+  }
+
   .tags {
     max-height: calc(1.9375rem * 2 + 0.5rem);
   }

@@ -57,7 +57,9 @@ export type Project = {
     label: string;
   };
   link?: string;
-  /** Обложка: карусель на главной + верхний слот на странице кейса */
+  /** Обложка в карусели на главной (если нет — используется cover) */
+  preview?: string;
+  /** Обложка: верхний слот на странице кейса; также fallback для карусели */
   cover?: string;
   /** Три скриншота ниже по странице кейса */
   shots?: [string, string, string];
@@ -163,6 +165,7 @@ export const projects: Project[] = [
       "Профиль родителя с аналитикой прогресса в приложении для iOS и Android",
       "Админ-панель управления контентом и игровой экономикой приложения",
     ],
+    preview: "/projects/novakids/preview.png",
     cover: "/projects/novakids/cover.png",
     shots: [
       "/projects/novakids/shot-1.jpg",

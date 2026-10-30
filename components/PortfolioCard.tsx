@@ -108,7 +108,8 @@ function PortfolioTags({ tags }: { tags: string[] }) {
 
 export function PortfolioCard({ project }: PortfolioCardProps) {
   const mark = getProjectMark(project);
-  const hasCover = Boolean(project.cover);
+  const mediaSrc = project.preview ?? project.cover;
+  const hasCover = Boolean(mediaSrc);
 
   return (
     <Link
@@ -117,10 +118,10 @@ export function PortfolioCard({ project }: PortfolioCardProps) {
       aria-label={`${project.title}. Открыть кейс`}
     >
       <div className={styles.media}>
-        {hasCover && project.cover ? (
+        {hasCover && mediaSrc ? (
           <>
             <Image
-              src={withBasePath(project.cover)}
+              src={withBasePath(mediaSrc)}
               alt=""
               fill
               sizes="400px"
@@ -128,7 +129,7 @@ export function PortfolioCard({ project }: PortfolioCardProps) {
               aria-hidden="true"
             />
             <Image
-              src={withBasePath(project.cover)}
+              src={withBasePath(mediaSrc)}
               alt={project.imageAlts?.[0] ?? ""}
               fill
               sizes="400px"
