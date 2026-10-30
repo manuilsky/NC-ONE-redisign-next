@@ -422,6 +422,13 @@ export const projects: Project[] = [
       "Аналитика цифровой репутации кандидата",
       "Дашборд HR Tech-платформы для background check",
     ],
+    preview: "/projects/profid/preview.png",
+    cover: "/projects/profid/cover.jpg",
+    shots: [
+      "/projects/profid/shot-1.png",
+      "/projects/profid/shot-2.png",
+      "/projects/profid/shot-3.png",
+    ],
   },
   {
     slug: "malahit",
@@ -492,6 +499,13 @@ export const projects: Project[] = [
       "Личный кабинет клиента с историей записей",
     ],
     link: "https://www.malahit.com",
+    preview: "/projects/malahit/preview.png",
+    cover: "/projects/malahit/cover.jpg",
+    shots: [
+      "/projects/malahit/shot-1.png",
+      "/projects/malahit/shot-2.png",
+      "/projects/malahit/shot-3.png",
+    ],
   },
   {
     slug: "finguard",
