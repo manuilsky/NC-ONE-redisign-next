@@ -34,6 +34,7 @@
 /*
   Poster fills the same box as the video cover target.
   background-size: cover matches JS fitCover for the same aspect media.
+  One poster per breakpoint — CSS media picks the frame before JS runs.
 */
 .poster {
   position: absolute;
@@ -42,10 +43,29 @@
   right: 0;
   bottom: 0;
   z-index: 2;
+  display: none;
   background-color: #000;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+@media (min-width: 1201px) {
+  .posterDesktop {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+  .posterTablet {
+    display: block;
+  }
+}
+
+@media (max-width: 767px) {
+  .posterMobile {
+    display: block;
+  }
 }
 
 /*

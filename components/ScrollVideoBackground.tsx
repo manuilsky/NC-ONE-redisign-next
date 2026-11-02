@@ -2,24 +2,30 @@
 
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import type { ScrollBgBreakpoint, ScrollBgSource } from "@/data/media";
 import styles from "./ScrollVideoBackground.module.css";
 
 type ScrollVideoBackgroundProps = {
-  src?: string;
-  poster?: string;
+  sources: Record<ScrollBgBreakpoint, ScrollBgSource>;
 };
 
 type NavigatorWithHints = Navigator & {
   connection?: { saveData?: boolean; effectiveType?: string };
 };
 
-// Matches the scrub encode (~24fps, every frame is a keyframe).
-const FRAME_SECONDS = 1 / 24;
+// Matches the rocket scrub encode (30fps).
+const FRAME_SECONDS = 1 / 30;
 const EASE = 0.45;
 const SLOW_SEEK_MS = 140;
 const SEEK_WATCHDOG_MS = 900;
 /** Treat as page bottom — mobile chrome/subpixels rarely hit exact maxScroll. */
 const SCROLL_END_PX = 3;
+
+const POSTER_CLASS: Record<ScrollBgBreakpoint, string> = {
+  desktop: styles.posterDesktop,
+  tablet: styles.posterTablet,
+  mobile: styles.posterMobile,
+};
 
 function canUseScrollVideo() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -36,6 +42,12 @@ function canUseScrollVideo() {
 
 function isCoarsePointer() {
   return window.matchMedia("(pointer: coarse)").matches;
+}
+
+function pickBreakpoint(): ScrollBgBreakpoint {
+  if (window.matchMedia("(max-width: 767px)").matches) return "mobile";
+  if (window.matchMedia("(max-width: 1200px)").matches) return "tablet";
+  return "desktop";
 }
 
 function clampTime(raw: number, duration: number) {
@@ -79,23 +91,54 @@ function fitCover(
   el.style.transform = "none";
 }
 
-export function ScrollVideoBackground({
-  src,
-  poster,
-}: ScrollVideoBackgroundProps) {
+export function ScrollVideoBackground({ sources }: ScrollVideoBackgroundProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [breakpoint, setBreakpoint] = useState<ScrollBgBreakpoint>("desktop");
+  /** False until the first client media-query read — avoids loading desktop on phones. */
+  const [breakpointReady, setBreakpointReady] = useState(false);
   const [useVideo, setUseVideo] = useState(false);
   /** Video composited under poster (opacity 1) but poster still covers it. */
   const [videoShown, setVideoShown] = useState(false);
   /** True only after decoded data is ready — then poster may hide. */
   const [revealed, setRevealed] = useState(false);
 
+  const active = sources[breakpoint];
+  const src = active?.src;
+  const srcRef = useRef(src);
+
+  // Reset poster/video reveal before paint when the breakpoint source changes.
+  if (src !== srcRef.current) {
+    srcRef.current = src;
+    if (videoShown) setVideoShown(false);
+    if (revealed) setRevealed(false);
+  }
+
   useEffect(() => {
-    if (!src) return;
-    if (!canUseScrollVideo()) return;
+    const sync = () => {
+      setBreakpoint(pickBreakpoint());
+      setBreakpointReady(true);
+    };
+    sync();
+
+    const mobileMq = window.matchMedia("(max-width: 767px)");
+    const tabletMq = window.matchMedia("(max-width: 1200px)");
+    mobileMq.addEventListener("change", sync);
+    tabletMq.addEventListener("change", sync);
+    return () => {
+      mobileMq.removeEventListener("change", sync);
+      tabletMq.removeEventListener("change", sync);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!breakpointReady || !src) return;
+    if (!canUseScrollVideo()) {
+      setUseVideo(false);
+      return;
+    }
     setUseVideo(true);
-  }, [src]);
+  }, [src, breakpointReady]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -418,15 +461,21 @@ export function ScrollVideoBackground({
   return (
     <div ref={rootRef} className={styles.root} aria-hidden="true">
       <div className={styles.fallback} />
-      {poster ? (
-        <div
-          className={`${styles.poster}${revealed ? ` ${styles.posterGone}` : ""}`}
-          style={{ backgroundImage: `url(${JSON.stringify(poster)})` }}
-        />
-      ) : null}
+      {(Object.keys(sources) as ScrollBgBreakpoint[]).map((key) => {
+        const poster = sources[key]?.poster;
+        if (!poster) return null;
+        return (
+          <div
+            key={key}
+            className={`${styles.poster} ${POSTER_CLASS[key]}${revealed ? ` ${styles.posterGone}` : ""}`}
+            style={{ backgroundImage: `url(${JSON.stringify(poster)})` }}
+          />
+        );
+      })}
       {useVideo && src ? (
         <video
           ref={videoRef}
+          key={src}
           className={`${styles.video}${videoShown ? "" : ` ${styles.videoPending}`}`}
           src={src}
           muted

@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { HashScroll } from "@/components/HashScroll";
 import { Header } from "@/components/Header";
 import { ScrollVideoBackground } from "@/components/ScrollVideoBackground";
-import { SCROLL_BG_POSTER, SCROLL_BG_VIDEO } from "@/data/media";
+import { SCROLL_BG_SOURCES } from "@/data/media";
 import { basePath } from "@/lib/paths";
 import "./globals.css";
 
@@ -56,14 +56,18 @@ export default function RootLayout({
   return (
     <html lang="ru" className={body.variable}>
       <head>
-        {SCROLL_BG_POSTER ? (
-          <link
-            rel="preload"
-            as="image"
-            href={SCROLL_BG_POSTER}
-            fetchPriority="high"
-          />
-        ) : null}
+        {Object.values(SCROLL_BG_SOURCES).map((source) =>
+          source.poster ? (
+            <link
+              key={source.poster}
+              rel="preload"
+              as="image"
+              href={source.poster}
+              media={source.media}
+              fetchPriority="high"
+            />
+          ) : null,
+        )}
       </head>
       <body className={body.className}>
         <Script id="home-scroll-boot" strategy="beforeInteractive">
@@ -71,10 +75,7 @@ export default function RootLayout({
         </Script>
         <div className="site">
           <HashScroll />
-          <ScrollVideoBackground
-            src={SCROLL_BG_VIDEO || undefined}
-            poster={SCROLL_BG_POSTER || undefined}
-          />
+          <ScrollVideoBackground sources={SCROLL_BG_SOURCES} />
           <Header />
           <main className="main">{children}</main>
           <Footer />
