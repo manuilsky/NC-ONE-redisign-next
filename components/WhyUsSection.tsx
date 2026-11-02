@@ -25,9 +25,13 @@ export function WhyUsSection({ items }: WhyUsSectionProps) {
     const measure = () => {
       const parent = track.parentElement;
       if (!parent) return;
-      const distance = Math.max(0, track.scrollWidth - parent.clientWidth);
-      setScrollDistance(distance);
-      setStickyHeight(sticky.offsetHeight);
+      const distance = Math.max(
+        0,
+        Math.round(track.scrollWidth - parent.clientWidth),
+      );
+      const height = Math.round(sticky.offsetHeight);
+      setScrollDistance((prev) => (prev === distance ? prev : distance));
+      setStickyHeight((prev) => (prev === height ? prev : height));
       if (distance <= 0) {
         track.style.transform = "translate3d(0,0,0)";
       }
@@ -51,20 +55,28 @@ export function WhyUsSection({ items }: WhyUsSectionProps) {
     const track = trackRef.current;
     if (!section || !sticky || !track) return;
 
+    const cards = Array.from(track.children) as HTMLElement[];
+    let stickyTop =
+      parseFloat(getComputedStyle(sticky).top) || 0;
+    let revealsDone = cards.every((card) =>
+      card.classList.contains(styles.cardVisible),
+    );
+
     const revealCards = () => {
+      if (revealsDone) return;
       const vh = window.innerHeight;
       const vw = window.innerWidth;
-      const headerH = parseFloat(getComputedStyle(sticky).top) || 0;
       let stagger = 0;
+      let pending = 0;
 
-      for (const node of track.children) {
-        const card = node as HTMLElement;
+      for (const card of cards) {
         if (card.classList.contains(styles.cardVisible)) continue;
+        pending += 1;
 
         const rect = card.getBoundingClientRect();
         const visibleW = Math.min(rect.right, vw) - Math.max(rect.left, 0);
         const visibleH =
-          Math.min(rect.bottom, vh) - Math.max(rect.top, headerH);
+          Math.min(rect.bottom, vh) - Math.max(rect.top, stickyTop);
         const enoughY = visibleH > rect.height * 0.3;
         const peeking = visibleW > rect.width * 0.12;
 
@@ -73,7 +85,10 @@ export function WhyUsSection({ items }: WhyUsSectionProps) {
         card.style.setProperty("--card-reveal-delay", `${stagger * 40}ms`);
         card.classList.add(styles.cardVisible);
         stagger += 1;
+        pending -= 1;
       }
+
+      if (pending === 0) revealsDone = true;
     };
 
     let raf = 0;
@@ -83,7 +98,6 @@ export function WhyUsSection({ items }: WhyUsSectionProps) {
         track.style.transform = "translate3d(0,0,0)";
       } else {
         const sectionTop = section.getBoundingClientRect().top;
-        const stickyTop = parseFloat(getComputedStyle(sticky).top) || 0;
         const scrolled = Math.min(
           Math.max(-sectionTop + stickyTop, 0),
           scrollDistance,
@@ -98,13 +112,21 @@ export function WhyUsSection({ items }: WhyUsSectionProps) {
       raf = requestAnimationFrame(update);
     };
 
+    const onResize = () => {
+      stickyTop = parseFloat(getComputedStyle(sticky).top) || 0;
+      revealsDone = cards.every((card) =>
+        card.classList.contains(styles.cardVisible),
+      );
+      onScroll();
+    };
+
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
     return () => {
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
     };
   }, [scrollDistance]);
 

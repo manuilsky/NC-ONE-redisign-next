@@ -13,11 +13,13 @@ type NavigatorWithHints = Navigator & {
   connection?: { saveData?: boolean; effectiveType?: string };
 };
 
-// Matches the rocket scrub encode (30fps).
+// Rocket encode is 30fps; keyframes land about every 4 frames.
 const FRAME_SECONDS = 1 / 30;
+/** Jump straight to aim when farther than this many steps (avoids range-request storms). */
+const SEEK_JUMP_STEPS = 6;
 const EASE = 0.45;
-const SLOW_SEEK_MS = 140;
-const SEEK_WATCHDOG_MS = 900;
+const SLOW_SEEK_MS = 120;
+const SEEK_WATCHDOG_MS = 700;
 /** Treat as page bottom — mobile chrome/subpixels rarely hit exact maxScroll. */
 const SCROLL_END_PX = 3;
 
@@ -167,6 +169,8 @@ export function ScrollVideoBackground({ sources }: ScrollVideoBackgroundProps) {
     const mobile = isCoarsePointer();
     // Slightly softer ease on phones so slow scrolls don't skip neighboring frames.
     const ease = mobile ? 0.35 : EASE;
+    // Desktop 1080p seeks are heavier — start a touch coarser, adapt further if slow.
+    if (!mobile) step = FRAME_SECONDS * 2;
 
     const ensureCoverLock = (allowWidthRetarget = false) => {
       const w = root.clientWidth;
@@ -253,14 +257,14 @@ export function ScrollVideoBackground({ sources }: ScrollVideoBackgroundProps) {
           seekDurations.length = 0;
           if (avg >= SLOW_SEEK_MS) {
             // Cap so we never fall back to very coarse jumps.
-            step = Math.min(step * 1.5, mobile ? 0.125 : 0.25);
+            step = Math.min(step * 1.5, mobile ? 0.2 : 0.4);
           }
         }
       }
 
       revealIfNeeded();
 
-      // Keep easing toward the latest scroll aim instead of hard-jumping.
+      // Keep chasing the latest scroll aim — large gaps jump in one seek (see tick).
       if (Math.abs(aim - playhead) >= step * 0.45) {
         schedule();
       }
@@ -299,7 +303,8 @@ export function ScrollVideoBackground({ sources }: ScrollVideoBackgroundProps) {
       if (seeking) return;
 
       const diff = aim - playhead;
-      if (Math.abs(diff) < step * 0.45) {
+      const abs = Math.abs(diff);
+      if (abs < step * 0.45) {
         // Force the true last frame once the page is at the bottom.
         if (scrollProgress() >= 1 && playhead < endTime() - step * 0.1) {
           apply(endTime());
@@ -310,6 +315,13 @@ export function ScrollVideoBackground({ sources }: ScrollVideoBackgroundProps) {
       // Near EOF: skip easing so mobile scrub actually reaches the last frame.
       if (aim >= endTime() - step) {
         apply(endTime());
+        return;
+      }
+
+      // Tall sticky sections (e.g. Why Us) move aim by seconds per frame.
+      // Chasing with many small seeks aborts prior byte-ranges → Network thrash.
+      if (abs > step * SEEK_JUMP_STEPS) {
+        apply(snapTime(aim, step, video.duration || 0));
         return;
       }
 
